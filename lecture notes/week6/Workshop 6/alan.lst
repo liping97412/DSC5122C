@@ -1,0 +1,233 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 1
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+C o m p i l a t i o n
+
+
+   2   
+       
+         This is a mini mean-variance portfolio selection problem described in
+         'GAMS/MINOS: Three examples' by Alan S. Manne, Department of Operations
+         Research, Stanford University, May 1986.
+       
+         Integer variables have been added to restrict the number of securities
+         selected. The resulting MINLP problem is solved with different option
+         settings to demonstrate some DICOPT features. Finally, the model is
+         solved by complete enumeration using GAMS procedural facilities.
+       
+       
+      Manne, A S, GAMS/MINOS: Three examples. Tech. rep., Department of
+      Operations Research, Stanford University, 1986.
+       
+  19   
+  20   Set i  securities   /hardware, software, show-biz, t-bills/;
+  21   alias (i,j)
+  22   
+  23   
+  24   Scalar  target    target mean annual return on portfolio (%)   / 10 /
+  25   
+  26   
+  27   Parameters  mean(i)  mean annual returns on individual securities (%)
+  28         / hardware   8
+  29          software   9
+  30          show-biz  12
+  31          t-bills    7 /
+  32   
+  33   Table v(i,j)  variance-covariance array (%-squared annual return)
+  34                    hardware  software  show-biz  t-bills
+  35         hardware      4         3         -1        0
+  36         software      3         6          1        0
+  37         show-biz     -1         1         10        0
+  38         t-bills       0         0          0        0
+  39   
+  40   Variables  x(i)       fraction of portfolio invested in asset i
+  41              variance   variance of portfolio
+  42   
+  43   Positive Variable x;
+  44   
+  45   Equations  fsum    fractions must add to 1.0
+  46              dmean   definition of mean return on portfolio
+  47              dvar    definition of variance;
+  48   
+  49   fsum..     sum(i, x(i))                     =e=  1.0  ;
+  50   dmean..    sum(i, mean(i)*x(i))             =e=  target;
+  51   dvar..     sum(i, x(i)*sum(j,v(i,j)*x(j)))  =e=  variance;
+  52   
+  53   Model portfolio  / fsum, dmean, dvar / ;
+  54   
+  55   Solve portfolio using nlp minimizing variance;
+  56   
+  57   Display x.l, dmean.l, dvar.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 2
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+Equation Listing    SOLVE portfolio Using NLP From line 55
+
+
+---- fsum  =E=  fractions must add to 1.0
+
+fsum..  x(hardware) + x(software) + x(show-biz) + x(t-bills) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- dmean  =E=  definition of mean return on portfolio
+
+dmean..  8*x(hardware) + 9*x(software) + 12*x(show-biz) + 7*x(t-bills) =E= 10 ; (LHS = 0, INFES = 10 ****)
+     
+
+---- dvar  =E=  definition of variance
+
+dvar..  (0)*x(hardware) + (0)*x(software) + (0)*x(show-biz) - variance =E= 0 ; (LHS = 0)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 3
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+Column Listing      SOLVE portfolio Using NLP From line 55
+
+
+---- x  fraction of portfolio invested in asset i
+
+x(hardware)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+        8       dmean
+       (0)      dvar
+
+x(software)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+        9       dmean
+       (0)      dvar
+
+x(show-biz)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+       12       dmean
+       (0)      dvar
+
+REMAINING ENTRY SKIPPED
+
+---- variance  variance of portfolio
+
+variance
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       dvar
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 4
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+Model Statistics    SOLVE portfolio Using NLP From line 55
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            3
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            12     NON LINEAR N-Z              3
+DERIVATIVE POOL              20     CONSTANT POOL              17
+CODE LENGTH                  25
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.000 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 5
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+Solution Report     SOLVE portfolio Using NLP From line 55
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   portfolio           OBJECTIVE  variance
+     TYPE    NLP                 DIRECTION  MINIMIZE
+     SOLVER  CONOPT              FROM LINE  55
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      2 Locally Optimal           
+**** OBJECTIVE VALUE                2.8990
+
+ RESOURCE USAGE, LIMIT          0.000      1000.000
+ ITERATION COUNT, LIMIT        10    2000000000
+ EVALUATION ERRORS              0             0
+CONOPT 3         26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+ 
+ 
+    C O N O P T 3   version 3.17I
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 5 variables and 3 constraints
+    with 12 Jacobian elements, 3 of which are nonlinear.
+    The Hessian of the Lagrangian has 3 elements on the diagonal,
+    3 elements below the diagonal, and 3 nonlinear variables.
+ 
+                   Pre-triangular equations:   0
+                   Post-triangular equations:  1
+ 
+ 
+ ** Optimal solution. Reduced gradient less than tolerance.
+ 
+ 
+ CONOPT time Total                            0.002 seconds
+   of which: Function evaluations             0.000 =  0.0%
+             1st Derivative evaluations       0.000 =  0.0%
+             Directional 2nd Derivative       0.000 =  0.0%
+ 
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU fsum               1.0000         1.0000         1.0000       -13.5288      
+---- EQU dmean             10.0000        10.0000        10.0000         1.9327      
+---- EQU dvar                .              .              .            -1.0000      
+
+  fsum  fractions must add to 1.0
+  dmean  definition of mean return on portfolio
+  dvar  definition of variance
+
+---- VAR x  fraction of portfolio invested in asset i
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+hardware          .             0.3029        +INF             .          
+software          .             0.0865        +INF            EPS         
+show-biz          .             0.5048        +INF             .          
+t-bills           .             0.1058        +INF            EPS         
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR variance          -INF            2.8990        +INF             .          
+
+  variance  variance of portfolio
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:17:08 Page 6
+A Quadratic Programming Model for Portfolio Analysis (ALAN,SEQ=124)
+E x e c u t i o n
+
+
+----     57 VARIABLE x.L  fraction of portfolio invested in asset i
+
+hardware 0.303,    software 0.087,    show-biz 0.505,    t-bills  0.106
+
+
+----     57 EQUATION dmean.L               =       10.000  definition of mean return on portfolio
+            EQUATION dvar.L                =        0.000  definition of variance
+
+
+EXECUTION TIME       =        0.016 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week6\Workshop 6\alan.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week6\Workshop 6\alan.lst

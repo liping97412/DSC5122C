@@ -1,0 +1,24 @@
+B 2 C o m p i l a t i o n
+B 101 Equation Listing    SOLVE worst_feed Using LP From line 91
+D 102 cdef
+D 110 mc
+D 117 fc
+D 132 tails
+B 157 Column Listing      SOLVE worst_feed Using LP From line 91
+E 158 cost
+E 166 x
+E 30191 mu
+B 40199 Model Statistics    SOLVE worst_feed Using LP From line 91
+B 40215 Solution Report     SOLVE worst_feed Using LP From line 91
+F 40245 cdef
+F 40246 mc
+F 40255 fc
+F 40262 tails
+G 50262 cost
+G 50268 x
+G 50277 mu
+B 50288 E x e c u t i o n
+I 50289 price
+I 64293 x
+I 64299 mu
+I 64300 cost

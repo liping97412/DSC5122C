@@ -1,0 +1,279 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 1
+Secutities portfolio
+C o m p i l a t i o n
+
+
+   2   
+   3   
+   4   
+   5   Set i  commodities   /aapl, mcd, qqq, spy, tlt/;
+   6   
+   7   alias (i,j);
+   8   
+   9   Scalars  target_return    target mean annual return on portfolio   / 0.02
+      /;
+  10   
+  11   Parameters  mean(i)  mean monthly returns on individual securities
+  12   
+  13        / aapl      0.0294
+  14          mcd       0.0132
+  15          qqq       0.0217
+  16          spy       0.0123
+  17          tlt       -0.001/ ;
+  18   
+  19   Table v(i,j)  variance-covariance array (squared monthly return)
+  20   
+  21                 aapl        mcd          qqq        spy          tlt
+  22         aapl    0.00237    0.00017      0.00007    0.00025     0.00028
+  23         mcd     0.00017    0.00135      0.00024   -0.00024     0.00012
+  24         qqq     0.00007    0.00024      0.00080   -0.00006     0.00006
+  25         spy     0.00025   -0.00024     -0.00006    0.00036     0.00005
+  26         tlt     0.00028    0.00012      0.00006    0.00005     0.00222;
+  27   
+  28   Variables  x(i)       fraction of portfolio invested in asset i
+  29              variance   variance of portfolio
+  30              e_return   expected return of the portfolio
+  31              var        value at risk;
+  32   
+  33   Positive Variable x;
+  34   
+  35   Equations  fsum    fractions must add to 1.0
+  36              dmean   definition of mean return on portfolio
+  37              target_eq  expected value is at least equal to the target retu
+      rn
+  38              dvar    definition of variance
+  39              chance  chance constraint with target for minimum return;
+  40   
+  41  fsum..        sum(i, x(i))=e=  1.0  ;
+  42  dmean..       e_return =e= sum(i, mean(i)*x(i));
+  43  target_eq..   e_return =g=  target_return;
+  44  dvar..        variance =e= sum((i,j), x(i)*v(i,j)*x(j));
+  45  chance..      var-e_return+1.64*sqrt(variance)  =l= 0;
+  46   
+  47   
+  48   
+  49  Model portfolio  / all / ;
+  50   
+  51  Solve portfolio using nlp minimizing variance;
+  52   
+  53  Display x.l, e_return.l, variance.l, var.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 2
+Secutities portfolio
+Equation Listing    SOLVE portfolio Using NLP From line 51
+
+
+---- fsum  =E=  fractions must add to 1.0
+
+fsum..  x(aapl) + x(mcd) + x(qqq) + x(spy) + x(tlt) =E= 1 ;
+     
+      (LHS = 0, INFES = 1 ****)
+     
+
+---- dmean  =E=  definition of mean return on portfolio
+
+dmean..  - 0.0294*x(aapl) - 0.0132*x(mcd) - 0.0217*x(qqq) - 0.0123*x(spy)
+     
+      + 0.001*x(tlt) + e_return =E= 0 ; (LHS = 0)
+     
+
+---- target_eq  =G=  expected value is at least equal to the target return
+
+target_eq..  e_return =G= 0.02 ; (LHS = 0, INFES = 0.02 ****)
+     
+
+---- dvar  =E=  definition of variance
+
+dvar..  (0)*x(aapl) + (0)*x(mcd) + (0)*x(qqq) + (0)*x(spy) + (0)*x(tlt)
+     
+      + variance =E= 0 ; (LHS = 0)
+     
+
+---- chance  =L=  chance constraint with target for minimum return
+
+chance..  (16400000000)*variance - e_return + var =L= 0 ; (LHS = 0)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 3
+Secutities portfolio
+Column Listing      SOLVE portfolio Using NLP From line 51
+
+
+---- x  fraction of portfolio invested in asset i
+
+x(aapl)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+       -0.0294  dmean
+       (0)      dvar
+
+x(mcd)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+       -0.0132  dmean
+       (0)      dvar
+
+x(qqq)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       fsum
+       -0.0217  dmean
+       (0)      dvar
+
+REMAINING 2 ENTRIES SKIPPED
+
+---- variance  variance of portfolio
+
+variance
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       dvar
+ (1.640000E+10) chance
+
+
+---- e_return  expected return of the portfolio
+
+e_return
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       dmean
+        1       target_eq
+       -1       chance
+
+
+---- var  value at risk
+
+var
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       chance
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 4
+Secutities portfolio
+Model Statistics    SOLVE portfolio Using NLP From line 51
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           5     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES            8
+NON ZERO ELEMENTS            21     NON LINEAR N-Z              6
+DERIVATIVE POOL              20     CONSTANT POOL              32
+CODE LENGTH                 108
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.016 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 5
+Secutities portfolio
+Solution Report     SOLVE portfolio Using NLP From line 51
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   portfolio           OBJECTIVE  variance
+     TYPE    NLP                 DIRECTION  MINIMIZE
+     SOLVER  CONOPT              FROM LINE  51
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      2 Locally Optimal           
+**** OBJECTIVE VALUE                0.0003
+
+ RESOURCE USAGE, LIMIT          0.000      1000.000
+ ITERATION COUNT, LIMIT         9    2000000000
+ EVALUATION ERRORS              0             0
+CONOPT 3         26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+ 
+ 
+    C O N O P T 3   version 3.17I
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 8 variables and 5 constraints
+    with 21 Jacobian elements, 6 of which are nonlinear.
+    The Hessian of the Lagrangian has 6 elements on the diagonal,
+    10 elements below the diagonal, and 6 nonlinear variables.
+ 
+                   Pre-triangular equations:   0
+                   Post-triangular equations:  2
+                   Definitional equations:     1
+ 
+ 
+ ** Optimal solution. Reduced gradient less than tolerance.
+ 
+ 
+ CONOPT time Total                            0.001 seconds
+   of which: Function evaluations             0.000 =  0.0%
+             1st Derivative evaluations       0.000 =  0.0%
+ 
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- EQU fsum           1.000     1.000     1.000 -4.377E-4      
+---- EQU dmean           .         .         .       -0.055      
+---- EQU target_eq      0.020     0.020     +INF      0.055      
+---- EQU dvar            .         .         .        1.000      
+---- EQU chance         -INF     -0.020      .         EPS       
+
+  fsum  fractions must add to 1.0
+  dmean  definition of mean return on portfolio
+  target_eq  expected value is at least equal to the target return
+  dvar  definition of variance
+  chance  chance constraint with target for minimum return
+
+---- VAR x  fraction of portfolio invested in asset i
+
+        LOWER     LEVEL     UPPER    MARGINAL
+
+aapl      .        0.197     +INF       .         
+mcd       .        0.051     +INF       EPS       
+qqq       .        0.455     +INF       EPS       
+spy       .        0.296     +INF       .         
+tlt       .         .        +INF  6.9923E-4      
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- VAR variance       -INF  3.2619E-4     +INF       .         
+---- VAR e_return       -INF      0.020     +INF       .         
+---- VAR var            -INF     -0.030     +INF       .         
+
+  variance  variance of portfolio
+  e_return  expected return of the portfolio
+  var  value at risk
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 15:54:53 Page 6
+Secutities portfolio
+E x e c u t i o n
+
+
+----     53 VARIABLE x.L  fraction of portfolio invested in asset i
+
+aapl 0.197,    mcd  0.051,    qqq  0.455,    spy  0.296
+
+
+----     53 VARIABLE e_return.L            =        0.020  expected return of th
+                                                           e portfolio
+            VARIABLE variance.L            =  3.261921E-4  variance of portfolio
+            VARIABLE var.L                 =       -0.030  value at risk
+
+
+EXECUTION TIME       =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week9\session 9 - workshop\portfolioProb.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week11\portfolioProb.lst

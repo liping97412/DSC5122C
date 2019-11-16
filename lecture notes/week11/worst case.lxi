@@ -1,0 +1,24 @@
+B 2 C o m p i l a t i o n
+B 85 Equation Listing    SOLVE portfolio Using LP From line 71
+D 86 fsum
+D 92 dmean
+D 98 target_eq
+D 103 tails
+B 119 Column Listing      SOLVE portfolio Using LP From line 71
+E 120 x
+E 20139 e_return
+E 20147 mu
+B 30155 Model Statistics    SOLVE portfolio Using LP From line 71
+B 30171 Solution Report     SOLVE portfolio Using LP From line 71
+F 30201 fsum
+F 30202 dmean
+F 30203 target_eq
+F 30212 tails
+G 40212 x
+G 40220 e_return
+G 40224 mu
+B 40234 E x e c u t i o n
+I 40235 a
+I 48574 x
+I 48580 e_return
+I 48582 mu

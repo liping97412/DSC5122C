@@ -1,0 +1,87 @@
+--- Job chance.gms Start 02/20/19 17:16:57 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- chance.gms(66) 3 Mb
+--- Starting execution: elapsed 0:00:00.022
+--- Generating LP model det
+--- chance.gms(57) 4 Mb
+---   4 rows  5 columns  17 non-zeroes
+--- Executing CPLEX: elapsed 0:00:00.050
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.00 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Display                         2
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+LP Presolve eliminated 1 rows and 1 columns.
+Reduced LP has 3 rows, 4 columns, and 12 nonzeros.
+Presolve time = 0.00 sec. (0.00 ticks)
+Initializing dual steep norms . . .
+
+Iteration      Dual Objective            In Variable           Out Variable
+     1              26.350000                x(oats)       nbal(fats) slack
+     2              28.942648              x(sesame)    nbal(protein) slack
+LP status(1): optimal
+Cplex Time: 0.00sec (det. 0.01 ticks)
+
+Optimal solution found.
+Objective :          28.942648
+
+--- Restarting execution
+--- chance.gms(57) 2 Mb
+--- Reading solution for model det
+--- Executing after solve: elapsed 0:00:00.388
+--- chance.gms(59) 3 Mb
+--- Generating NLP model chance
+--- chance.gms(62) 5 Mb
+---   4 rows  5 columns  17 non-zeroes
+---   25 nl-code  4 nl-non-zeroes
+--- chance.gms(62) 3 Mb
+--- Executing CONOPT: elapsed 0:00:00.395
+CONOPT 3         26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+ 
+ 
+    C O N O P T 3   version 3.17I
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+   Iter Phase Ninf   Infeasibility   RGmax    NSB   Step InItr MX OK
+      0   0        4.2446379922E+00 (Input point)
+ 
+                   Pre-triangular equations:   0
+                   Post-triangular equations:  1
+ 
+      1   0        4.2446379922E+00 (After pre-processing)
+      2   0        2.6528987451E-01 (After scaling)
+ 
+ ** Feasible solution. Value of objective =    32.5984627444
+ 
+   Iter Phase Ninf     Objective     RGmax    NSB   Step InItr MX OK
+     11   3        3.0443121118E+01 8.7E-01     1 1.0E+00    1 T  T
+     17   4        3.0410608243E+01 1.5E-09     1
+ 
+ ** Optimal solution. Reduced gradient less than tolerance.
+ 
+--- Restarting execution
+--- chance.gms(62) 2 Mb
+--- Reading solution for model chance
+--- Executing after solve: elapsed 0:00:01.292
+--- chance.gms(66) 3 Mb
+*** Status: Normal completion
+--- Job chance.gms Stop 02/20/19 17:16:58 elapsed 0:00:01.293

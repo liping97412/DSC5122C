@@ -1,0 +1,19 @@
+B 2 C o m p i l a t i o n
+B 65 Equation Listing    SOLVE mix Using LP From line 56
+D 66 obj
+D 262 lbal
+B 275 Column Listing      SOLVE mix Using LP From line 56
+E 276 EProfit
+E 284 x
+E 2100 v
+B 2121 Model Statistics    SOLVE mix Using LP From line 56
+B 2137 Solution Report     SOLVE mix Using LP From line 56
+F 2167 obj
+F 2175 lbal
+G 2775 EProfit
+G 2781 x
+G 2790 v
+B 3402 E x e c u t i o n
+I 3405 EProfit
+I 3406 x
+I 3411 v

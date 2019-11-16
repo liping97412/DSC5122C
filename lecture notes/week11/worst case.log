@@ -1,0 +1,53 @@
+
+--- Job worst case.gms Start 04/17/19 20:47:19 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- worst case.gms(73) 4 Mb
+--- Starting execution: elapsed 0:00:00.016
+--- worst case.gms(47) 6 Mb
+--- Generating LP model portfolio
+--- worst case.gms(71) 11 Mb
+---   10,003 rows  5 columns  30,008 non-zeroes
+--- Executing CPLEX: elapsed 0:00:00.122
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+--- GAMS/Cplex licensed for continuous and discrete problems.
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.20 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+DUAL formed by presolve
+LP Presolve eliminated 1 rows and 1 columns.
+Reduced LP has 4 rows, 10002 columns, and 30006 nonzeros.
+Presolve time = 0.00 sec. (5.36 ticks)
+
+Iteration log . . .
+Sifting iteration    1 [    3]:   Objective     =             0.008094
+Sifting iteration    2 [ 1003]:   Objective     =             0.101304
+LP status(1): optimal
+Cplex Time: 0.01sec (det. 12.75 ticks)
+
+Optimal solution found.
+Objective :           0.101304
+
+--- Restarting execution
+--- worst case.gms(71) 5 Mb
+--- Reading solution for model portfolio
+--- worst case.gms(71) 6 Mb
+--- Executing after solve: elapsed 0:00:00.496
+--- worst case.gms(73) 7 Mb
+*** Status: Normal completion
+--- Job worst case.gms Stop 04/17/19 20:47:20 elapsed 0:00:00.871

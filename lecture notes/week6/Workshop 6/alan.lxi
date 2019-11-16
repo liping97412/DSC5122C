@@ -1,0 +1,19 @@
+B 2 C o m p i l a t i o n
+B 64 Equation Listing    SOLVE portfolio Using NLP From line 55
+D 65 fsum
+D 71 dmean
+D 76 dvar
+B 83 Column Listing      SOLVE portfolio Using NLP From line 55
+E 84 x
+E 107 variance
+B 116 Model Statistics    SOLVE portfolio Using NLP From line 55
+B 134 Solution Report     SOLVE portfolio Using NLP From line 55
+F 179 fsum
+F 180 dmean
+F 181 dvar
+G 186 x
+G 195 variance
+B 209 E x e c u t i o n
+I 210 x
+I 217 dmean
+I 218 dvar

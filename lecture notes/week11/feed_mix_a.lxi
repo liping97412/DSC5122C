@@ -1,0 +1,19 @@
+B 2 C o m p i l a t i o n
+B 100 Equation Listing    SOLVE chance Using LP From line 88
+D 101 cdef
+D 109 mc
+D 116 fc
+B 133 Column Listing      SOLVE chance Using LP From line 88
+E 134 cost
+E 142 x
+B 169 Model Statistics    SOLVE chance Using LP From line 88
+B 185 Solution Report     SOLVE chance Using LP From line 88
+F 214 cdef
+F 215 mc
+F 224 fc
+G 226 cost
+G 232 x
+B 248 E x e c u t i o n
+I 249 a
+I 393 x
+I 399 cost

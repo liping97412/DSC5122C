@@ -1,0 +1,19 @@
+B 2 C o m p i l a t i o n
+B 212 E x e c u t i o n
+I 213 pert_alpha
+I 221 pert_beta
+B 230 Model Statistics    SOLVE pert_regularized Using CNS From line 104
+B 249 Solution Report     SOLVE pert_regularized Using CNS From line 104
+B 274 E x e c u t i o n
+I 275 min_d
+I 282 max_d
+I 288 w
+I 2462 d
+B 4638 Model Statistics    SOLVE project Using LP From line 171
+B 4654 Solution Report     SOLVE project Using LP From line 171
+B 4688 E x e c u t i o n
+I 4689 y
+I 4895 var
+I 4896 cvar
+I 4898 z
+I 4922 x

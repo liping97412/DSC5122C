@@ -1,0 +1,23 @@
+B 2 C o m p i l a t i o n
+B 70 E x e c u t i o n
+I 71 lev
+I 77 price
+I 82 decision_profit
+B 126 Equation Listing    SOLVE strategic Using LP From line 56
+D 127 stateValue
+D 139 profit
+B 150 Column Listing      SOLVE strategic Using LP From line 56
+E 151 v
+E 198 z
+B 207 Model Statistics    SOLVE strategic Using LP From line 56
+B 223 Solution Report     SOLVE strategic Using LP From line 56
+F 254 stateValue
+F 419 profit
+G 422 v
+G 463 z
+B 476 E x e c u t i o n
+I 477 decision_profit
+I 521 z
+I 522 v
+I 540 td
+I 582 stateValue

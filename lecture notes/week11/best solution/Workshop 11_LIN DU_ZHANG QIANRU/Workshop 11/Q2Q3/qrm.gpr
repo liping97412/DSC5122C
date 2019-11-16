@@ -1,0 +1,31 @@
+[PROJECT]
+
+[RP:UNTITLED_1]
+1=
+
+[RP:PORTFOLIOCVAR]
+1=
+
+[RP:RISK_PROBABILITY]
+1=
+
+[RP:HAMMER_CVAR]
+1=
+
+[RP:HAMMER_NEUTRAL]
+1=
+
+[MRUFILES]
+1=C:\Users\admin\Google Drive\2019\QRM\Session 10 - workshop\workshop 10\portfolioCVaR.gms
+2=C:\Users\admin\Google Drive\2019\QRM\cplex.opt
+3=C:\Users\admin\Google Drive\2019\QRM\Untitled_1.gms
+
+[OPENWINDOW_1]
+FILE0=C:\Users\Lindu\Desktop\NUS\Sem 2\DSC5211C\Session 11\Workshop\hammer_neutral.gms
+FILE1=C:\Users\Lindu\Desktop\NUS\Sem 2\DSC5211C\Session 11\Workshop\hammer_neutral.lst
+FILE2=C:\Users\Lindu\Desktop\NUS\Sem 2\DSC5211C\Session 11\Workshop\hammer_neutral.gms
+MAXIM=0
+TOP=5
+LEFT=0
+HEIGHT=809
+WIDTH=1388

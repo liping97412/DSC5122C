@@ -1,0 +1,14 @@
+--- Job oilSpeculatorBase.gms Start 03/06/19 19:39:42 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- oilSpeculatorBase.gms(63) 3 Mb
+--- Starting execution: elapsed 0:00:00.160
+--- oilSpeculatorBase.gms(42) 4 Mb
+--- Generating LP model strategic
+--- oilSpeculatorBase.gms(56) 4 Mb
+---   163 rows  37 columns  595 non-zeroes
+--- Executing CPLEX: elapsed 0:00:00.245

@@ -1,0 +1,47 @@
+--- Job alan.gms Start 02/20/19 17:17:08 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- alan.gms(57) 3 Mb
+--- Starting execution: elapsed 0:00:00.021
+--- Generating NLP model portfolio
+--- alan.gms(55) 6 Mb
+---   3 rows  5 columns  12 non-zeroes
+---   25 nl-code  3 nl-non-zeroes
+--- alan.gms(55) 4 Mb
+--- Executing CONOPT: elapsed 0:00:00.031
+CONOPT 3         26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+ 
+ 
+    C O N O P T 3   version 3.17I
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+   Iter Phase Ninf   Infeasibility   RGmax    NSB   Step InItr MX OK
+      0   0        1.1000000000E+01 (Input point)
+ 
+                   Pre-triangular equations:   0
+                   Post-triangular equations:  1
+ 
+      1   0        1.1000000000E+01 (After pre-processing)
+      2   0        2.2500000000E+00 (After scaling)
+ 
+ ** Feasible solution. Value of objective =    4.22222222222
+ 
+   Iter Phase Ninf     Objective     RGmax    NSB   Step InItr MX OK
+     10   4        2.8990384615E+00 2.2E-15     2
+ 
+ ** Optimal solution. Reduced gradient less than tolerance.
+ 
+--- Restarting execution
+--- alan.gms(55) 2 Mb
+--- Reading solution for model portfolio
+--- Executing after solve: elapsed 0:00:00.377
+--- alan.gms(57) 3 Mb
+*** Status: Normal completion
+--- Job alan.gms Stop 02/20/19 17:17:08 elapsed 0:00:00.378

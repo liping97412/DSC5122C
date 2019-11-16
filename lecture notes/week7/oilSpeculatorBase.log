@@ -1,0 +1,35 @@
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.01 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+LP Presolve eliminated 1 rows and 1 columns.
+Reduced LP has 162 rows, 36 columns, and 558 nonzeros.
+Presolve time = 0.11 sec. (0.07 ticks)
+
+Iteration log . . .
+Iteration:     1   Scaled dual infeas =            35.729730
+Iteration:    37   Dual objective     =        636382.319357
+LP status(1): optimal
+Cplex Time: 0.83sec (det. 0.73 ticks)
+
+Optimal solution found.
+Objective :     1621599.309700
+
+--- Restarting execution
+--- oilSpeculatorBase.gms(56) 2 Mb
+--- Reading solution for model strategic
+--- Executing after solve: elapsed 0:00:03.646
+--- oilSpeculatorBase.gms(63) 3 Mb
+*** Status: Normal completion
+--- Job oilSpeculatorBase.gms Stop 03/06/19 19:39:46 elapsed 0:00:03.654

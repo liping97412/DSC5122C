@@ -1,0 +1,10 @@
+B 2 C o m p i l a t i o n
+B 162 Model Statistics    SOLVE hammer Using LP From line 67
+B 178 Solution Report     SOLVE hammer Using LP From line 67
+B 213 E x e c u t i o n
+I 216 exp_sales
+I 217 exp_lost_sales
+I 218 exp_leftover
+I 220 stockout_prob
+I 221 var
+I 222 cvar

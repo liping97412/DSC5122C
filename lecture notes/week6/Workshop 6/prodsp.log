@@ -1,0 +1,41 @@
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+--- GAMS/Cplex licensed for continuous and discrete problems.
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.03 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+LP Presolve eliminated 1 rows and 1 columns.
+Reduced LP has 600 rows, 604 columns, and 3000 nonzeros.
+Presolve time = 0.00 sec. (0.48 ticks)
+
+Iteration log . . .
+Iteration:     1   Scaled dual infeas =            53.662584
+Iteration:    62   Scaled dual infeas =            17.892963
+Iteration:   180   Scaled dual infeas =             0.980506
+Iteration:   190   Dual objective     =         19005.820708
+Iteration:   251   Dual objective     =         18402.074098
+Iteration:   313   Dual objective     =         18024.125203
+Iteration:   375   Dual objective     =         17869.144565
+LP status(1): optimal
+Cplex Time: 0.00sec (det. 8.24 ticks)
+
+Optimal solution found.
+Objective :       17869.044936
+
+--- Restarting execution
+--- prodsp.gms(56) 2 Mb
+--- Reading solution for model mix
+--- Executing after solve: elapsed 0:00:02.131
+--- prodsp.gms(58) 3 Mb
+*** Status: Normal completion
+--- Job prodsp.gms Stop 02/20/19 17:16:19 elapsed 0:00:02.132

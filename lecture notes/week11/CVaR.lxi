@@ -1,0 +1,31 @@
+B 2 C o m p i l a t i o n
+B 88 Equation Listing    SOLVE portfolio Using LP From line 77
+D 89 fsum
+D 95 dmean
+D 101 target_eq
+D 106 tails
+D 123 cvar_eq
+B 10130 Column Listing      SOLVE portfolio Using LP From line 77
+E 10131 x
+E 30150 e_return
+E 30158 var
+E 40165 cvar
+E 40172 z
+B 40193 Model Statistics    SOLVE portfolio Using LP From line 77
+B 40209 Solution Report     SOLVE portfolio Using LP From line 77
+F 40239 fsum
+F 40240 dmean
+F 40241 target_eq
+F 40250 tails
+F 50253 cvar_eq
+G 50256 x
+G 50264 e_return
+G 50268 var
+G 50269 cvar
+G 50274 z
+B 60286 E x e c u t i o n
+I 60287 a
+I 68626 x
+I 68632 e_return
+I 68634 var
+I 68635 cvar

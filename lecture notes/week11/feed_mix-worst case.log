@@ -1,0 +1,54 @@
+
+--- Job feed_mix-worst case.gms Start 04/17/19 16:04:17 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- feed_mix-worst case.gms(93) 4 Mb
+--- Starting execution: elapsed 0:00:00.012
+--- feed_mix-worst case.gms(70) 10 Mb
+--- Generating LP model worst_feed
+--- feed_mix-worst case.gms(91) 15 Mb
+---   10,004 rows  6 columns  50,017 non-zeroes
+--- Executing CPLEX: elapsed 0:00:00.190
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+--- GAMS/Cplex licensed for continuous and discrete problems.
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.20 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+DUAL formed by presolve
+LP Presolve eliminated 2 rows and 1 columns.
+Reduced LP has 5 rows, 10002 columns, and 50008 nonzeros.
+Presolve time = 0.00 sec. (9.57 ticks)
+
+Iteration log . . .
+Sifting iteration    1 [    3]:   Objective     =            20.473859
+Sifting iteration    2 [ 1003]:   Objective     =            63.731110
+Sifting iteration    3 [ 1006]:   Objective     =            64.641499
+LP status(1): optimal
+Cplex Time: 0.08sec (det. 19.32 ticks)
+
+Optimal solution found.
+Objective :          64.641499
+
+--- Restarting execution
+--- feed_mix-worst case.gms(91) 8 Mb
+--- Reading solution for model worst_feed
+--- feed_mix-worst case.gms(91) 9 Mb
+--- Executing after solve: elapsed 0:00:00.750
+--- feed_mix-worst case.gms(92) 9 Mb
+*** Status: Normal completion
+--- Job feed_mix-worst case.gms Stop 04/17/19 16:04:19 elapsed 0:00:01.288

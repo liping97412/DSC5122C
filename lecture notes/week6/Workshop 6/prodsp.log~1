@@ -1,0 +1,14 @@
+--- Job prodsp.gms Start 02/20/19 17:16:17 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- prodsp.gms(58) 3 Mb
+--- Starting execution: elapsed 0:00:00.026
+--- prodsp.gms(39) 4 Mb
+--- Generating LP model mix
+--- prodsp.gms(56) 5 Mb
+---   601 rows  605 columns  3,605 non-zeroes
+--- Executing CPLEX: elapsed 0:00:00.051

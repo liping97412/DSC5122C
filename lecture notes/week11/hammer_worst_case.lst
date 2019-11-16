@@ -1,0 +1,233 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/03/19 21:21:08 Page 1
+O'Neil Hammer 3/2 wetsuit - Risk Neutral
+C o m p i l a t i o n
+
+
+   2   
+       options to control the random number generator, the solver and the output
+   6   
+   7  Options seed    =   12345
+   8          limrow  =   0
+   9          limcol  =   0
+  10          iterlim =   1000000
+  11          reslim  =   1000000
+  12          sysout  =   off
+  13          solprint =  off;
+  14   
+  15   
+  16  Set s  scenarios    /s1*s100/;
+  17   
+  18  Scalar beta      prob. of not being in the tail  /0.9/;
+  19   
+  20  Scalars mean      mean demand                                  /3192/
+  21          sd        standard deviation of demand                 /1181/
+  22          p         price of the wetsuit                         /190/
+  23          c         average purchase cost                        /110/
+  24          v         salvage value                                /90/;
+  25   
+  26  Parameters demand(s)  demand in scenario s;
+  27   
+  28   
+  29  demand(s) = max(normal(mean,sd),0);
+  30   
+  31  Variables   q             number of suits ordered from supplier
+  32              sales(s)      number of suites sold
+  33              leftover(s)   leftover inventory
+  34              profit(s)     profit from selling the wetsuits in scenario s
+  35              exp_profit    expected profit from selling the wetsuits
+  36              mu            the profit;
+  37   
+  38  Positive Variable q, sales, leftover, z(s);
+  39   
+  40   
+  41  Equations  sales_demand(s)    sales in scenario s less than demand
+  42             sales_orders(s)    sales in scenario s are less than orders
+  43             leftover_eq(s)     equation to compute leftover inventory
+  44             profit_eq(s)       profit in scenario s
+  45             exp_profit_eq      expected profit
+  46             tails(s)           tails of profit;
+  47   
+  48   
+  49  sales_demand(s).. sales(s) =l= demand(s);
+  50   
+  51  sales_orders(s).. sales(s) =l= q;
+  52   
+  53  leftover_eq(s)..  leftover(s)=e= q -sales(s);
+  54   
+  55  profit_eq(s)..    profit(s)=e=(p-c)*sales(s)-(c-v)*leftover(s);
+  56   
+  57  exp_profit_eq..   exp_profit =e= sum(s, profit(s))/card(s);
+  58   
+  59  tails(s)..        mu =l= profit(s);
+  60   
+  61  Model hammer  / all / ;
+  62   
+  63  Solve hammer using lp maximizing mu;
+  64   
+  65  *Display exp_profit.l, q.l, profit.l,sales.l, leftover.l, demand;
+  66  Display mu.l
+  67  **************************************************************************
+      ******
+  68  ***** Other Measures of Performance **************************************
+      ******
+  69  **************************************************************************
+      ******
+  70   
+  71  Scalars exp_sales expected sales
+  72          exp_lost_sales expected lost sales
+  73          exp_leftover expected leftover inventory
+  74          stockout_prob stockout probability;
+  75   
+  76   
+  77  exp_sales      = sum(s,sales.l(s))/card(s);
+  78   
+  79  exp_lost_sales = sum(s,max(demand(s)-q.l,0))/card(s);
+  80   
+  81  exp_leftover   = sum(s,leftover.l(s))/card(s);
+  82   
+  83  stockout_prob  = sum(s $ (demand(s) > q.l), 1)/card(s);
+  84   
+  85  *Display exp_sales, exp_lost_sales, exp_leftover, stockout_prob;
+  86   
+  87   
+  88  **************************************************************************
+      ******
+  89  ***** Display Results in Text Files **************************************
+      ******
+  90  **************************************************************************
+      ******
+  91  file results /hammer_results.txt/;
+  92  put results;
+  93   
+  94  put 'Orders ', @20, 'Exp_profit ', @40, 'Exp_sales ', @60, 'Exp_lost_sales
+       ',
+  95  @80, 'Exp_leftover ', @100, 'Stockout_prob '//;
+  96   
+  97  put  q.l, @20, exp_profit.l, @40, exp_sales, @60, exp_lost_sales,
+  98  @80, exp_leftover, @100, stockout_prob//;
+  99   
+ 100  put //;
+ 101  put 'Scenario', @20, 'Profit ', @40, 'Sales ', @60, 'Leftover_inv ', @80, 
+      'demand '/;
+ 102   
+ 103  loop(s,put s.tl, profit.l(s), @40, sales.l(s), @60, leftover.l(s), @80, de
+      mand(s)/);
+ 104   
+ 105   
+ 106  **************************************************************************
+      ******
+ 107  ***** Display Results in Text Files **************************************
+      ******
+ 108  ******Using More FILES ***************************************************
+      ******
+ 109  **************************************************************************
+      ******
+      file results /hammer_results.txt/;
+      put results;
+      put 'Orders ',     @24, q.l //;
+      put 'Exp_profit ', @24, exp_profit.l //;
+      put 'Exp_sales ', @24, exp_sales //;
+      put 'Exp_lost_sales ', @24, exp_lost_sales //;
+      put 'Exp_leftover ', @24, exp_leftover //;
+      put 'Stockout_prob ', @24, stockout_prob //;
+       
+       
+      file profit_file /hammer_profit.txt/;
+      put profit_file;
+      loop(s,put profit.l(s)/);
+       
+      file sales_file /hammer_sales.txt/;
+      put  sales_file;
+      loop(s,put sales.l(s)/);
+       
+       
+      file leftover_file /hammer_leftover.txt/;
+      put leftover_file;
+      loop(s,put leftover.l(s)/);
+       
+      file demand_file /hammer_demand.txt/;
+      put demand_file;
+      loop(s,put demand(s)/);
+ 138   
+ 139   
+ 140   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/03/19 21:21:08 Page 2
+O'Neil Hammer 3/2 wetsuit - Risk Neutral
+Model Statistics    SOLVE hammer Using LP From line 63
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS          501
+BLOCKS OF VARIABLES           6     SINGLE VARIABLES          303
+NON ZERO ELEMENTS         1,201
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.015 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/03/19 21:21:08 Page 3
+O'Neil Hammer 3/2 wetsuit - Risk Neutral
+Solution Report     SOLVE hammer Using LP From line 63
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   hammer              OBJECTIVE  mu
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  63
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE                0.0000
+
+ RESOURCE USAGE, LIMIT          0.078   1000000.000
+ ITERATION COUNT, LIMIT         1       1000000
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+--- GAMS/Cplex licensed for continuous and discrete problems.
+Cplex 12.8.0.0
+
+Space for names approximately 0.02 Mb
+Use option 'names no' to turn use of names off
+LP status(1): optimal
+Cplex Time: 0.00sec (det. 0.72 ticks)
+Optimal solution found.
+Objective :           0.000000
+
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/03/19 21:21:08 Page 4
+O'Neil Hammer 3/2 wetsuit - Risk Neutral
+E x e c u t i o n
+
+
+----     66 VARIABLE mu.L                  =        0.000  the profit
+
+**** REPORT FILE SUMMARY
+
+results C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMEN
+        T\week11\hammer_results.txt
+
+
+EXECUTION TIME       =        0.016 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week11\hammer_worst_case.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week11\hammer_worst_case.lst

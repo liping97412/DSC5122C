@@ -1,0 +1,945 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 1
+Petroleum Speculator
+C o m p i l a t i o n
+
+
+   2   
+       
+         This is a linear programming formulation for optimal management of petr
+      oleum
+         stockpiles by a speculator.
+       
+   9   
+  10   
+  11  Sets  s    state of inventory /s0*s10/
+  12        i    state of the oil market  / low, normal, high, very_high /
+  13   
+  14  Alias(s,sp,spp,sppp), (i,j);
+  15   
+  16   
+  17   
+  18  Scalars  b     discount factor  pr month                        /.995/
+  19           h     holding cost (us$ per month)                     /0.00167/
+  20           lag   policy lag  (allowed discrete inventory jumps)   /2/;
+  21   
+  22  Table  pr(i,j)  transition probability of the world oil market per month
+  23                low     normal       high     very_high
+  24  low           .956     .044        .000     .000
+  25  normal        .044     .850        .106     .000
+  26  high          .000     .114        .781     .105
+  27  very_high     .000     .000        .105     .895;
+  28   
+  29   
+  30  Parameters  lev(s)      level of the inventory  (Kbbl)
+  31              price(i)  oil price (us$ per bbl)        /low    1.61, normal 
+       2.60, high 3.12, very_high 4.28/
+  32              decision_profit(s,i,sp)  profit associated with each action in
+       a given state;
+  33   
+  34   
+  35  lev(s)    = 100*(ord(s)-1);
+  36   
+  37   
+  38  decision_profit(s,i,sp) = inf;
+  39  decision_profit(s,i,sp)$(abs(ord(sp)-ord(s)) le lag) = price(i)*(lev(s)-le
+      v(sp))-h*lev(sp);
+  40   
+  41   
+  42   
+  43  Display lev, price, decision_profit;
+  44   
+  45  Variables  v(s,i) present value of the profit in state (si)
+  46             z      present value of expected cost;
+  47   
+  48  Equations  stateValue(s,i,sp) define the main equation to calculate the st
+      ate value
+  49             profit             profit definition;
+  50   
+  51   
+  52  stateValue(s,i,sp)$(abs(ord(sp)-ord(s))le lag)..v(s,i)-b*sum(j,pr(i,j)*v(s
+      p,j))=g=decision_profit(s,i,sp);
+  53   
+  54  profit..   z =e= sum((s,i),v(s,i));
+  55   
+  56  Model strategic / all /;
+  57  Solve strategic using lp minimizing z;
+  58   
+  59   
+  60  Parameters td(s,i,sp) trade ie the Kbbl bought or sold in state (si);
+  61   
+  62  td(s,i,sp) = 1$ (stateValue.m(s,i,sp)>0);
+  63   
+  64  Display  decision_profit, z.l, v.l, td, stateValue.m;
+
+
+COMPILATION TIME     =        0.015 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 2
+Petroleum Speculator
+E x e c u t i o n
+
+
+----     43 PARAMETER lev  level of the inventory  (Kbbl)
+
+s1   100.000,    s2   200.000,    s3   300.000,    s4   400.000,    s5   500.000
+s6   600.000,    s7   700.000,    s8   800.000,    s9   900.000,    s10 1000.000
+
+
+----     43 PARAMETER price  oil price (us$ per bbl)
+
+low       1.610,    normal    2.600,    high      3.120,    very_high 4.280
+
+
+----     43 PARAMETER decision_profit  profit associated with each action in a g
+                                       iven state
+
+                       s0          s1          s2          s3          s4
+
+s0 .low                      -161.167    -322.334        +INF        +INF
+s0 .normal                   -260.167    -520.334        +INF        +INF
+s0 .high                     -312.167    -624.334        +INF        +INF
+s0 .very_high                -428.167    -856.334        +INF        +INF
+s1 .low           161.000      -0.167    -161.334    -322.501        +INF
+s1 .normal        260.000      -0.167    -260.334    -520.501        +INF
+s1 .high          312.000      -0.167    -312.334    -624.501        +INF
+s1 .very_high     428.000      -0.167    -428.334    -856.501        +INF
+s2 .low           322.000     160.833      -0.334    -161.501    -322.668
+s2 .normal        520.000     259.833      -0.334    -260.501    -520.668
+s2 .high          624.000     311.833      -0.334    -312.501    -624.668
+s2 .very_high     856.000     427.833      -0.334    -428.501    -856.668
+s3 .low              +INF     321.833     160.666      -0.501    -161.668
+s3 .normal           +INF     519.833     259.666      -0.501    -260.668
+s3 .high             +INF     623.833     311.666      -0.501    -312.668
+s3 .very_high        +INF     855.833     427.666      -0.501    -428.668
+s4 .low              +INF        +INF     321.666     160.499      -0.668
+s4 .normal           +INF        +INF     519.666     259.499      -0.668
+s4 .high             +INF        +INF     623.666     311.499      -0.668
+s4 .very_high        +INF        +INF     855.666     427.499      -0.668
+s5 .low              +INF        +INF        +INF     321.499     160.332
+s5 .normal           +INF        +INF        +INF     519.499     259.332
+s5 .high             +INF        +INF        +INF     623.499     311.332
+s5 .very_high        +INF        +INF        +INF     855.499     427.332
+s6 .low              +INF        +INF        +INF        +INF     321.332
+s6 .normal           +INF        +INF        +INF        +INF     519.332
+s6 .high             +INF        +INF        +INF        +INF     623.332
+s6 .very_high        +INF        +INF        +INF        +INF     855.332
+s7 .low              +INF        +INF        +INF        +INF        +INF
+s7 .normal           +INF        +INF        +INF        +INF        +INF
+s7 .high             +INF        +INF        +INF        +INF        +INF
+s7 .very_high        +INF        +INF        +INF        +INF        +INF
+s8 .low              +INF        +INF        +INF        +INF        +INF
+s8 .normal           +INF        +INF        +INF        +INF        +INF
+s8 .high             +INF        +INF        +INF        +INF        +INF
+s8 .very_high        +INF        +INF        +INF        +INF        +INF
+s9 .low              +INF        +INF        +INF        +INF        +INF
+s9 .normal           +INF        +INF        +INF        +INF        +INF
+s9 .high             +INF        +INF        +INF        +INF        +INF
+s9 .very_high        +INF        +INF        +INF        +INF        +INF
+s10.low              +INF        +INF        +INF        +INF        +INF
+s10.normal           +INF        +INF        +INF        +INF        +INF
+s10.high             +INF        +INF        +INF        +INF        +INF
+s10.very_high        +INF        +INF        +INF        +INF        +INF
+
+            +          s5          s6          s7          s8          s9
+
+s0 .low              +INF        +INF        +INF        +INF        +INF
+s0 .normal           +INF        +INF        +INF        +INF        +INF
+s0 .high             +INF        +INF        +INF        +INF        +INF
+s0 .very_high        +INF        +INF        +INF        +INF        +INF
+s1 .low              +INF        +INF        +INF        +INF        +INF
+s1 .normal           +INF        +INF        +INF        +INF        +INF
+s1 .high             +INF        +INF        +INF        +INF        +INF
+s1 .very_high        +INF        +INF        +INF        +INF        +INF
+s2 .low              +INF        +INF        +INF        +INF        +INF
+s2 .normal           +INF        +INF        +INF        +INF        +INF
+s2 .high             +INF        +INF        +INF        +INF        +INF
+s2 .very_high        +INF        +INF        +INF        +INF        +INF
+s3 .low          -322.835        +INF        +INF        +INF        +INF
+s3 .normal       -520.835        +INF        +INF        +INF        +INF
+s3 .high         -624.835        +INF        +INF        +INF        +INF
+s3 .very_high    -856.835        +INF        +INF        +INF        +INF
+s4 .low          -161.835    -323.002        +INF        +INF        +INF
+s4 .normal       -260.835    -521.002        +INF        +INF        +INF
+s4 .high         -312.835    -625.002        +INF        +INF        +INF
+s4 .very_high    -428.835    -857.002        +INF        +INF        +INF
+s5 .low            -0.835    -162.002    -323.169        +INF        +INF
+s5 .normal         -0.835    -261.002    -521.169        +INF        +INF
+s5 .high           -0.835    -313.002    -625.169        +INF        +INF
+s5 .very_high      -0.835    -429.002    -857.169        +INF        +INF
+s6 .low           160.165      -1.002    -162.169    -323.336        +INF
+s6 .normal        259.165      -1.002    -261.169    -521.336        +INF
+s6 .high          311.165      -1.002    -313.169    -625.336        +INF
+s6 .very_high     427.165      -1.002    -429.169    -857.336        +INF
+s7 .low           321.165     159.998      -1.169    -162.336    -323.503
+s7 .normal        519.165     258.998      -1.169    -261.336    -521.503
+s7 .high          623.165     310.998      -1.169    -313.336    -625.503
+s7 .very_high     855.165     426.998      -1.169    -429.336    -857.503
+s8 .low              +INF     320.998     159.831      -1.336    -162.503
+s8 .normal           +INF     518.998     258.831      -1.336    -261.503
+s8 .high             +INF     622.998     310.831      -1.336    -313.503
+s8 .very_high        +INF     854.998     426.831      -1.336    -429.503
+s9 .low              +INF        +INF     320.831     159.664      -1.503
+s9 .normal           +INF        +INF     518.831     258.664      -1.503
+s9 .high             +INF        +INF     622.831     310.664      -1.503
+s9 .very_high        +INF        +INF     854.831     426.664      -1.503
+s10.low              +INF        +INF        +INF     320.664     159.497
+s10.normal           +INF        +INF        +INF     518.664     258.497
+s10.high             +INF        +INF        +INF     622.664     310.497
+s10.very_high        +INF        +INF        +INF     854.664     426.497
+
+            +         s10
+
+s0 .low              +INF
+s0 .normal           +INF
+s0 .high             +INF
+s0 .very_high        +INF
+s1 .low              +INF
+s1 .normal           +INF
+s1 .high             +INF
+s1 .very_high        +INF
+s2 .low              +INF
+s2 .normal           +INF
+s2 .high             +INF
+s2 .very_high        +INF
+s3 .low              +INF
+s3 .normal           +INF
+s3 .high             +INF
+s3 .very_high        +INF
+s4 .low              +INF
+s4 .normal           +INF
+s4 .high             +INF
+s4 .very_high        +INF
+s5 .low              +INF
+s5 .normal           +INF
+s5 .high             +INF
+s5 .very_high        +INF
+s6 .low              +INF
+s6 .normal           +INF
+s6 .high             +INF
+s6 .very_high        +INF
+s7 .low              +INF
+s7 .normal           +INF
+s7 .high             +INF
+s7 .very_high        +INF
+s8 .low          -323.670
+s8 .normal       -521.670
+s8 .high         -625.670
+s8 .very_high    -857.670
+s9 .low          -162.670
+s9 .normal       -261.670
+s9 .high         -313.670
+s9 .very_high    -429.670
+s10.low            -1.670
+s10.normal         -1.670
+s10.high           -1.670
+s10.very_high      -1.670
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 3
+Petroleum Speculator
+Equation Listing    SOLVE strategic Using LP From line 57
+
+
+---- stateValue  =G=  define the main equation to calculate the state value
+
+stateValue(s0,low,s0)..  0.04878*v(s0,low) - 0.04378*v(s0,normal) =G= 0 ;
+     
+      (LHS = 0)
+     
+stateValue(s0,low,s1)..  v(s0,low) - 0.95122*v(s1,low) - 0.04378*v(s1,normal)
+      =G= -161.167 ; (LHS = 0)
+     
+stateValue(s0,low,s2)..  v(s0,low) - 0.95122*v(s2,low) - 0.04378*v(s2,normal)
+      =G= -322.334 ; (LHS = 0)
+     
+REMAINING 193 ENTRIES SKIPPED
+
+
+---- profit  =E=  profit definition
+
+profit..  - v(s0,low) - v(s0,normal) - v(s0,high) - v(s0,very_high) - v(s1,low)
+     
+      - v(s1,normal) - v(s1,high) - v(s1,very_high) - v(s2,low) - v(s2,normal)
+     
+      - v(s2,high) - v(s2,very_high) - v(s3,low) - v(s3,normal) - v(s3,high)
+     
+      - v(s3,very_high) - v(s4,low) - v(s4,normal) - v(s4,high)
+     
+      - v(s4,very_high) - v(s5,low) - v(s5,normal) - v(s5,high)
+     
+      - v(s5,very_high) - v(s6,low) - v(s6,normal) - v(s6,high)
+     
+      - v(s6,very_high) - v(s7,low) - v(s7,normal) - v(s7,high)
+     
+      - v(s7,very_high) - v(s8,low) - v(s8,normal) - v(s8,high)
+     
+      - v(s8,very_high) - v(s9,low) - v(s9,normal) - v(s9,high)
+     
+      - v(s9,very_high) - v(s10,low) - v(s10,normal) - v(s10,high)
+     
+      - v(s10,very_high) + z =E= 0 ; (LHS = 0)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 4
+Petroleum Speculator
+Column Listing      SOLVE strategic Using LP From line 57
+
+
+---- v  present value of the profit in state (si)
+
+v(s0,low)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        0.0488  stateValue(s0,low,s0)
+        1       stateValue(s0,low,s1)
+        1       stateValue(s0,low,s2)
+       -0.0438  stateValue(s0,normal,s0)
+       -0.9512  stateValue(s1,low,s0)
+       -0.0438  stateValue(s1,normal,s0)
+       -0.9512  stateValue(s2,low,s0)
+       -0.0438  stateValue(s2,normal,s0)
+       -1       profit
+
+v(s0,normal)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -0.0438  stateValue(s0,low,s0)
+        0.1542  stateValue(s0,normal,s0)
+        1       stateValue(s0,normal,s1)
+        1       stateValue(s0,normal,s2)
+       -0.1134  stateValue(s0,high,s0)
+       -0.0438  stateValue(s1,low,s0)
+       -0.8458  stateValue(s1,normal,s0)
+       -0.1134  stateValue(s1,high,s0)
+       -0.0438  stateValue(s2,low,s0)
+       -0.8458  stateValue(s2,normal,s0)
+       -0.1134  stateValue(s2,high,s0)
+       -1       profit
+
+v(s0,high)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -0.1055  stateValue(s0,normal,s0)
+        0.2229  stateValue(s0,high,s0)
+        1       stateValue(s0,high,s1)
+        1       stateValue(s0,high,s2)
+       -0.1045  stateValue(s0,very_high,s0)
+       -0.1055  stateValue(s1,normal,s0)
+       -0.7771  stateValue(s1,high,s0)
+       -0.1045  stateValue(s1,very_high,s0)
+       -0.1055  stateValue(s2,normal,s0)
+       -0.7771  stateValue(s2,high,s0)
+       -0.1045  stateValue(s2,very_high,s0)
+       -1       profit
+
+REMAINING 41 ENTRIES SKIPPED
+
+---- z  present value of expected cost
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       profit
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 5
+Petroleum Speculator
+Model Statistics    SOLVE strategic Using LP From line 57
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS          197
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           45
+NON ZERO ELEMENTS           687
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.000 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 6
+Petroleum Speculator
+Solution Report     SOLVE strategic Using LP From line 57
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   strategic           OBJECTIVE  z
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  57
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE           172181.9420
+
+ RESOURCE USAGE, LIMIT          0.000      1000.000
+ ITERATION COUNT, LIMIT        88    2000000000
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+Cplex 12.8.0.0
+
+Space for names approximately 0.01 Mb
+Use option 'names no' to turn use of names off
+LP status(1): optimal
+Cplex Time: 0.00sec (det. 1.13 ticks)
+Optimal solution found.
+Objective :      172181.942044
+
+
+---- EQU stateValue  define the main equation to calculate the state value
+
+                     LOWER     LEVEL     UPPER    MARGINAL
+
+s0 .low      .s0       .       30.518     +INF       .         
+s0 .low      .s1   -161.167  -145.908     +INF       .         
+s0 .low      .s2   -322.334  -322.334     +INF      1.000      
+s0 .normal   .s0       .        2.035     +INF       .         
+s0 .normal   .s1   -260.167  -259.149     +INF       .         
+s0 .normal   .s2   -520.334  -520.334     +INF      1.000      
+s0 .high     .s0       .       16.345     +INF       .         
+s0 .high     .s1   -312.167  -303.995     +INF       .         
+s0 .high     .s2   -624.334  -624.334     +INF    168.120      
+s0 .very_high.s0       .         .        +INF   1425.501      
+s0 .very_high.s1   -428.167  -414.230     +INF       .         
+s0 .very_high.s2   -856.334  -828.460     +INF       .         
+s1 .low      .s0    161.000   204.010     +INF       .         
+s1 .low      .s1     -0.167    27.583     +INF       .         
+s1 .low      .s2   -161.334  -148.843     +INF       .         
+s1 .low      .s3   -322.501  -322.501     +INF      1.000      
+s1 .normal   .s0    260.000   262.382     +INF       .         
+s1 .normal   .s1     -0.167     1.198     +INF       .         
+s1 .normal   .s2   -260.334  -259.987     +INF       .         
+s1 .normal   .s3   -520.501  -520.501     +INF      1.000      
+s1 .high     .s0    312.000   333.028     +INF       .         
+s1 .high     .s1     -0.167    12.689     +INF       .         
+s1 .high     .s2   -312.334  -307.651     +INF       .         
+s1 .high     .s3   -624.501  -624.501     +INF      1.424      
+s1 .very_high.s0    428.000   428.000     +INF      4.616      
+s1 .very_high.s1     -0.167    13.770     +INF       .         
+s1 .very_high.s2   -428.334  -400.460     +INF       .         
+s1 .very_high.s3   -856.501  -802.011     +INF       .         
+s2 .low      .s0    322.000   377.501     +INF       .         
+s2 .low      .s1    160.833   201.074     +INF       .         
+s2 .low      .s2     -0.334    24.648     +INF       .         
+s2 .low      .s3   -161.501  -149.010     +INF       .         
+s2 .low      .s4   -322.668  -322.668     +INF      1.995      
+s2 .normal   .s0    520.000   522.729     +INF       .         
+s2 .normal   .s1    259.833   261.545     +INF       .         
+s2 .normal   .s2     -0.334     0.360     +INF       .         
+s2 .normal   .s3   -260.501  -260.154     +INF       .         
+s2 .normal   .s4   -520.668  -520.668     +INF     20.959      
+s2 .high     .s0    624.000   649.711     +INF       .         
+s2 .high     .s1    311.833   329.372     +INF       .         
+s2 .high     .s2     -0.334     9.032     +INF       .         
+s2 .high     .s3   -312.501  -307.818     +INF       .         
+s2 .high     .s4   -624.668  -624.668     +INF    149.459      
+s2 .very_high.s0    856.000   856.000     +INF    169.502      
+s2 .very_high.s1    427.833   441.770     +INF       .         
+s2 .very_high.s2     -0.334    27.540     +INF       .         
+s2 .very_high.s3   -428.501  -374.011     +INF       .         
+s2 .very_high.s4   -856.668  -775.562     +INF       .         
+s3 .low      .s1    321.833   371.670     +INF       .         
+s3 .low      .s2    160.666   195.244     +INF       .         
+s3 .low      .s3     -0.501    21.586     +INF       .         
+s3 .low      .s4   -161.668  -152.072     +INF       .         
+s3 .low      .s5   -322.835  -322.835     +INF      1.995      
+s3 .normal   .s1    519.833   521.569     +INF       .         
+s3 .normal   .s2    259.666   260.385     +INF       .         
+s3 .normal   .s3     -0.501    -0.129     +INF       .         
+s3 .normal   .s4   -260.668  -260.643     +INF       .         
+s3 .normal   .s5   -520.835  -520.835     +INF      2.051      
+s3 .high     .s1    623.833   643.486     +INF       .         
+s3 .high     .s2    311.666   323.146     +INF       .         
+s3 .high     .s3     -0.501     6.296     +INF       .         
+s3 .high     .s4   -312.668  -310.554     +INF       .         
+s3 .high     .s5   -624.835  -624.835     +INF      2.554      
+s3 .very_high.s1    855.833   855.833     +INF      4.061      
+s3 .very_high.s2    427.666   441.603     +INF       .         
+s3 .very_high.s3     -0.501    40.052     +INF       .         
+s3 .very_high.s4   -428.668  -361.498     +INF       .         
+s3 .very_high.s5   -856.835  -751.591     +INF       .         
+s4 .low      .s2    321.666   365.840     +INF       .         
+s4 .low      .s3    160.499   192.182     +INF       .         
+s4 .low      .s4     -0.668    18.524     +INF       .         
+s4 .low      .s5   -161.835  -152.239     +INF       .         
+s4 .low      .s6   -323.002  -323.002     +INF      3.815      
+s4 .normal   .s2    519.666   520.409     +INF       .         
+s4 .normal   .s3    259.499   259.895     +INF       .         
+s4 .normal   .s4     -0.668    -0.619     +INF       .         
+s4 .normal   .s5   -260.835  -260.810     +INF       .         
+s4 .normal   .s6   -521.002  -521.002     +INF     35.767      
+s4 .high     .s2    623.666   637.260     +INF       .         
+s4 .high     .s3    311.499   320.410     +INF       .         
+s4 .high     .s4     -0.668     3.560     +INF       .         
+s4 .high     .s5   -312.835  -310.721     +INF       .         
+s4 .high     .s6   -625.002  -625.002     +INF    137.290      
+s4 .very_high.s2    855.666   855.666     +INF    169.493      
+s4 .very_high.s3    427.499   454.115     +INF       .         
+s4 .very_high.s4     -0.668    52.565     +INF       .         
+s4 .very_high.s5   -428.835  -337.528     +INF       .         
+s4 .very_high.s6   -857.002  -727.620     +INF       .         
+s5 .low      .s3    321.499   359.735     +INF       .         
+s5 .low      .s4    160.332   186.077     +INF       .         
+s5 .low      .s5     -0.835    15.314     +INF       .         
+s5 .low      .s6   -162.002  -155.449     +INF       .         
+s5 .low      .s7   -323.169  -323.169     +INF      2.987      
+s5 .normal   .s3    519.499   519.895     +INF       .         
+s5 .normal   .s4    259.332   259.381     +INF       .         
+s5 .normal   .s5     -0.835    -0.810     +INF       .         
+s5 .normal   .s6   -261.002  -261.002     +INF      3.112      
+s5 .normal   .s7   -521.169  -520.999     +INF       .         
+s5 .high     .s3    623.499   632.926     +INF       .         
+s5 .high     .s4    311.332   316.076     +INF       .         
+s5 .high     .s5     -0.835     1.795     +INF       .         
+s5 .high     .s6   -313.002  -312.486     +INF       .         
+s5 .high     .s7   -625.169  -625.169     +INF      3.436      
+s5 .very_high.s3    855.499   855.499     +INF      3.270      
+s5 .very_high.s4    427.332   453.948     +INF       .         
+s5 .very_high.s5     -0.835    63.856     +INF       .         
+s5 .very_high.s6   -429.002  -326.236     +INF       .         
+s5 .very_high.s7   -857.169  -706.071     +INF       .         
+s6 .low      .s4    321.332   353.631     +INF       .         
+s6 .low      .s5    160.165   182.868     +INF       .         
+s6 .low      .s6     -1.002    12.105     +INF       .         
+s6 .low      .s7   -162.169  -155.616     +INF       .         
+s6 .low      .s8   -323.336  -323.336     +INF     99.033      
+s6 .normal   .s4    519.332   519.381     +INF       .         
+s6 .normal   .s5    259.165   259.190     +INF       .         
+s6 .normal   .s6     -1.002    -1.002     +INF   1840.441      
+s6 .normal   .s7   -261.169  -260.999     +INF       .         
+s6 .normal   .s8   -521.336  -520.996     +INF       .         
+s6 .high     .s4    623.332   628.592     +INF       .         
+s6 .high     .s5    311.165   314.311     +INF       .         
+s6 .high     .s6     -1.002     0.030     +INF       .         
+s6 .high     .s7   -313.169  -312.653     +INF       .         
+s6 .high     .s8   -625.336  -625.336     +INF    353.454      
+s6 .very_high.s4    855.332   855.332     +INF    171.672      
+s6 .very_high.s5    427.165   465.240     +INF       .         
+s6 .very_high.s6     -1.002    75.147     +INF       .         
+s6 .very_high.s7   -429.169  -304.687     +INF       .         
+s6 .very_high.s8   -857.336  -684.521     +INF       .         
+s7 .low      .s5    321.165   347.222     +INF       .         
+s7 .low      .s6    159.998   176.459     +INF       .         
+s7 .low      .s7     -1.169     8.739     +INF       .         
+s7 .low      .s8   -162.336  -158.981     +INF       .         
+s7 .low      .s9   -323.503  -323.503     +INF      3.893      
+s7 .normal   .s5    519.165   519.190     +INF       .         
+s7 .normal   .s6    258.998   258.998     +INF      2.510      
+s7 .normal   .s7     -1.169    -0.999     +INF       .         
+s7 .normal   .s8   -261.336  -260.996     +INF       .         
+s7 .normal   .s9   -521.503  -520.703     +INF       .         
+s7 .high     .s5    623.165   626.311     +INF       .         
+s7 .high     .s6    310.998   312.030     +INF       .         
+s7 .high     .s7     -1.169    -0.653     +INF       .         
+s7 .high     .s8   -313.336  -313.336     +INF      3.898      
+s7 .high     .s9   -625.503  -624.928     +INF       .         
+s7 .very_high.s5    855.165   855.165     +INF      2.249      
+s7 .very_high.s6    426.998   465.073     +INF       .         
+s7 .very_high.s7     -1.169    85.238     +INF       .         
+s7 .very_high.s8   -429.336  -294.596     +INF       .         
+s7 .very_high.s9   -857.503  -665.296     +INF       .         
+s8 .low      .s6    320.998   340.814     +INF       .         
+s8 .low      .s7    159.831   173.094     +INF       .         
+s8 .low      .s8     -1.336     5.374     +INF       .         
+s8 .low      .s9   -162.503  -159.148     +INF       .         
+s8 .low      .s10  -323.670  -323.670     +INF     99.374      
+s8 .normal   .s6    518.998   518.998     +INF    274.482      
+s8 .normal   .s7    258.831   259.001     +INF       .         
+s8 .normal   .s8     -1.336    -0.996     +INF       .         
+s8 .normal   .s9   -261.503  -260.703     +INF       .         
+s8 .normal   .s10  -521.670  -520.409     +INF       .         
+s8 .high     .s6    622.998   624.030     +INF       .         
+s8 .high     .s7    310.831   311.347     +INF       .         
+s8 .high     .s8     -1.336    -1.336     +INF   1302.828      
+s8 .high     .s9   -313.503  -312.928     +INF       .         
+s8 .high     .s10  -625.670  -624.520     +INF       .         
+s8 .very_high.s6    854.998   854.998     +INF    175.547      
+s8 .very_high.s7    426.831   475.164     +INF       .         
+s8 .very_high.s8     -1.336    95.329     +INF       .         
+s8 .very_high.s9   -429.503  -275.370     +INF       .         
+s8 .very_high.s10  -857.670  -646.070     +INF       .         
+s9 .low      .s7    320.831   334.094     +INF       .         
+s9 .low      .s8    159.664   166.374     +INF       .         
+s9 .low      .s9     -1.503     1.852     +INF       .         
+s9 .low      .s10  -162.670  -162.670     +INF      4.703      
+s9 .normal   .s7    518.831   518.831     +INF      1.170      
+s9 .normal   .s8    258.664   258.834     +INF       .         
+s9 .normal   .s9     -1.503    -0.873     +INF       .         
+s9 .normal   .s10  -261.670  -260.579     +INF       .         
+s9 .high     .s7    622.831   623.347     +INF       .         
+s9 .high     .s8    310.664   310.664     +INF      1.000      
+s9 .high     .s9     -1.503    -0.928     +INF       .         
+s9 .high     .s10  -313.670  -312.520     +INF       .         
+s9 .very_high.s7    854.831   854.831     +INF      1.000      
+s9 .very_high.s8    426.664   474.997     +INF       .         
+s9 .very_high.s9     -1.503   104.297     +INF       .         
+s9 .very_high.s10  -429.670  -266.402     +INF       .         
+s10.low      .s8    320.664   327.374     +INF       .         
+s10.low      .s9    159.497   162.852     +INF       .         
+s10.low      .s10    -1.670    -1.670     +INF   2050.030      
+s10.normal   .s8    518.664   518.664     +INF     95.307      
+s10.normal   .s9    258.497   258.957     +INF       .         
+s10.normal   .s10    -1.670    -0.749     +INF       .         
+s10.high     .s8    622.664   622.664     +INF      1.000      
+s10.high     .s9    310.497   311.072     +INF       .         
+s10.high     .s10    -1.670    -0.520     +INF       .         
+s10.very_high.s8    854.664   854.664     +INF      1.000      
+s10.very_high.s9    426.497   483.964     +INF       .         
+s10.very_high.s10    -1.670   113.265     +INF       .         
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- EQU profit          .         .         .        1.000      
+
+  profit  profit definition
+
+---- VAR v  present value of the profit in state (si)
+
+                 LOWER     LEVEL     UPPER    MARGINAL
+
+s0 .low           -INF   2808.336     +INF       .         
+s0 .normal        -INF   2431.983     +INF       .         
+s0 .high          -INF   2371.759     +INF       .         
+s0 .very_high     -INF   2263.435     +INF       .         
+s1 .low           -INF   2981.827     +INF       .         
+s1 .normal        -INF   2692.330     +INF       .         
+s1 .high          -INF   2688.442     +INF       .         
+s1 .very_high     -INF   2691.435     +INF       .         
+s2 .low           -INF   3155.318     +INF       .         
+s2 .normal        -INF   2952.677     +INF       .         
+s2 .high          -INF   3005.125     +INF       .         
+s2 .very_high     -INF   3119.435     +INF       .         
+s3 .low           -INF   3325.914     +INF       .         
+s3 .normal        -INF   3212.702     +INF       .         
+s3 .high          -INF   3319.239     +INF       .         
+s3 .very_high     -INF   3533.498     +INF       .         
+s4 .low           -INF   3496.510     +INF       .         
+s4 .normal        -INF   3472.726     +INF       .         
+s4 .high          -INF   3633.353     +INF       .         
+s4 .very_high     -INF   3947.561     +INF       .         
+s5 .low           -INF   3664.063     +INF       .         
+s5 .normal        -INF   3732.726     +INF       .         
+s5 .high          -INF   3945.869     +INF       .         
+s5 .very_high     -INF   4348.945     +INF       .         
+s6 .low           -INF   3831.617     +INF       .         
+s6 .normal        -INF   3992.726     +INF       .         
+s6 .high          -INF   4258.385     +INF       .         
+s6 .very_high     -INF   4750.328     +INF       .         
+s7 .low           -INF   3995.972     +INF       .         
+s7 .normal        -INF   4252.726     +INF       .         
+s7 .high          -INF   4570.385     +INF       .         
+s7 .very_high     -INF   5140.254     +INF       .         
+s8 .low           -INF   4160.326     +INF       .         
+s8 .normal        -INF   4512.726     +INF       .         
+s8 .high          -INF   4882.385     +INF       .         
+s8 .very_high     -INF   5530.179     +INF       .         
+s9 .low           -INF   4321.326     +INF       .         
+s9 .normal        -INF   4772.556     +INF       .         
+s9 .high          -INF   5194.385     +INF       .         
+s9 .very_high     -INF   5909.846     +INF       .         
+s10.low           -INF   4482.326     +INF       .         
+s10.normal        -INF   5032.386     +INF       .         
+s10.high          -INF   5506.385     +INF       .         
+s10.very_high     -INF   6289.514     +INF       .         
+
+                       LOWER     LEVEL     UPPER    MARGINAL
+
+---- VAR z              -INF  1.7218E+5     +INF       .         
+
+  z  present value of expected cost
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows 04/15/19 11:00:32 Page 7
+Petroleum Speculator
+E x e c u t i o n
+
+
+----     64 PARAMETER decision_profit  profit associated with each action in a g
+                                       iven state
+
+                       s0          s1          s2          s3          s4
+
+s0 .low                      -161.167    -322.334        +INF        +INF
+s0 .normal                   -260.167    -520.334        +INF        +INF
+s0 .high                     -312.167    -624.334        +INF        +INF
+s0 .very_high                -428.167    -856.334        +INF        +INF
+s1 .low           161.000      -0.167    -161.334    -322.501        +INF
+s1 .normal        260.000      -0.167    -260.334    -520.501        +INF
+s1 .high          312.000      -0.167    -312.334    -624.501        +INF
+s1 .very_high     428.000      -0.167    -428.334    -856.501        +INF
+s2 .low           322.000     160.833      -0.334    -161.501    -322.668
+s2 .normal        520.000     259.833      -0.334    -260.501    -520.668
+s2 .high          624.000     311.833      -0.334    -312.501    -624.668
+s2 .very_high     856.000     427.833      -0.334    -428.501    -856.668
+s3 .low              +INF     321.833     160.666      -0.501    -161.668
+s3 .normal           +INF     519.833     259.666      -0.501    -260.668
+s3 .high             +INF     623.833     311.666      -0.501    -312.668
+s3 .very_high        +INF     855.833     427.666      -0.501    -428.668
+s4 .low              +INF        +INF     321.666     160.499      -0.668
+s4 .normal           +INF        +INF     519.666     259.499      -0.668
+s4 .high             +INF        +INF     623.666     311.499      -0.668
+s4 .very_high        +INF        +INF     855.666     427.499      -0.668
+s5 .low              +INF        +INF        +INF     321.499     160.332
+s5 .normal           +INF        +INF        +INF     519.499     259.332
+s5 .high             +INF        +INF        +INF     623.499     311.332
+s5 .very_high        +INF        +INF        +INF     855.499     427.332
+s6 .low              +INF        +INF        +INF        +INF     321.332
+s6 .normal           +INF        +INF        +INF        +INF     519.332
+s6 .high             +INF        +INF        +INF        +INF     623.332
+s6 .very_high        +INF        +INF        +INF        +INF     855.332
+s7 .low              +INF        +INF        +INF        +INF        +INF
+s7 .normal           +INF        +INF        +INF        +INF        +INF
+s7 .high             +INF        +INF        +INF        +INF        +INF
+s7 .very_high        +INF        +INF        +INF        +INF        +INF
+s8 .low              +INF        +INF        +INF        +INF        +INF
+s8 .normal           +INF        +INF        +INF        +INF        +INF
+s8 .high             +INF        +INF        +INF        +INF        +INF
+s8 .very_high        +INF        +INF        +INF        +INF        +INF
+s9 .low              +INF        +INF        +INF        +INF        +INF
+s9 .normal           +INF        +INF        +INF        +INF        +INF
+s9 .high             +INF        +INF        +INF        +INF        +INF
+s9 .very_high        +INF        +INF        +INF        +INF        +INF
+s10.low              +INF        +INF        +INF        +INF        +INF
+s10.normal           +INF        +INF        +INF        +INF        +INF
+s10.high             +INF        +INF        +INF        +INF        +INF
+s10.very_high        +INF        +INF        +INF        +INF        +INF
+
+            +          s5          s6          s7          s8          s9
+
+s0 .low              +INF        +INF        +INF        +INF        +INF
+s0 .normal           +INF        +INF        +INF        +INF        +INF
+s0 .high             +INF        +INF        +INF        +INF        +INF
+s0 .very_high        +INF        +INF        +INF        +INF        +INF
+s1 .low              +INF        +INF        +INF        +INF        +INF
+s1 .normal           +INF        +INF        +INF        +INF        +INF
+s1 .high             +INF        +INF        +INF        +INF        +INF
+s1 .very_high        +INF        +INF        +INF        +INF        +INF
+s2 .low              +INF        +INF        +INF        +INF        +INF
+s2 .normal           +INF        +INF        +INF        +INF        +INF
+s2 .high             +INF        +INF        +INF        +INF        +INF
+s2 .very_high        +INF        +INF        +INF        +INF        +INF
+s3 .low          -322.835        +INF        +INF        +INF        +INF
+s3 .normal       -520.835        +INF        +INF        +INF        +INF
+s3 .high         -624.835        +INF        +INF        +INF        +INF
+s3 .very_high    -856.835        +INF        +INF        +INF        +INF
+s4 .low          -161.835    -323.002        +INF        +INF        +INF
+s4 .normal       -260.835    -521.002        +INF        +INF        +INF
+s4 .high         -312.835    -625.002        +INF        +INF        +INF
+s4 .very_high    -428.835    -857.002        +INF        +INF        +INF
+s5 .low            -0.835    -162.002    -323.169        +INF        +INF
+s5 .normal         -0.835    -261.002    -521.169        +INF        +INF
+s5 .high           -0.835    -313.002    -625.169        +INF        +INF
+s5 .very_high      -0.835    -429.002    -857.169        +INF        +INF
+s6 .low           160.165      -1.002    -162.169    -323.336        +INF
+s6 .normal        259.165      -1.002    -261.169    -521.336        +INF
+s6 .high          311.165      -1.002    -313.169    -625.336        +INF
+s6 .very_high     427.165      -1.002    -429.169    -857.336        +INF
+s7 .low           321.165     159.998      -1.169    -162.336    -323.503
+s7 .normal        519.165     258.998      -1.169    -261.336    -521.503
+s7 .high          623.165     310.998      -1.169    -313.336    -625.503
+s7 .very_high     855.165     426.998      -1.169    -429.336    -857.503
+s8 .low              +INF     320.998     159.831      -1.336    -162.503
+s8 .normal           +INF     518.998     258.831      -1.336    -261.503
+s8 .high             +INF     622.998     310.831      -1.336    -313.503
+s8 .very_high        +INF     854.998     426.831      -1.336    -429.503
+s9 .low              +INF        +INF     320.831     159.664      -1.503
+s9 .normal           +INF        +INF     518.831     258.664      -1.503
+s9 .high             +INF        +INF     622.831     310.664      -1.503
+s9 .very_high        +INF        +INF     854.831     426.664      -1.503
+s10.low              +INF        +INF        +INF     320.664     159.497
+s10.normal           +INF        +INF        +INF     518.664     258.497
+s10.high             +INF        +INF        +INF     622.664     310.497
+s10.very_high        +INF        +INF        +INF     854.664     426.497
+
+            +         s10
+
+s0 .low              +INF
+s0 .normal           +INF
+s0 .high             +INF
+s0 .very_high        +INF
+s1 .low              +INF
+s1 .normal           +INF
+s1 .high             +INF
+s1 .very_high        +INF
+s2 .low              +INF
+s2 .normal           +INF
+s2 .high             +INF
+s2 .very_high        +INF
+s3 .low              +INF
+s3 .normal           +INF
+s3 .high             +INF
+s3 .very_high        +INF
+s4 .low              +INF
+s4 .normal           +INF
+s4 .high             +INF
+s4 .very_high        +INF
+s5 .low              +INF
+s5 .normal           +INF
+s5 .high             +INF
+s5 .very_high        +INF
+s6 .low              +INF
+s6 .normal           +INF
+s6 .high             +INF
+s6 .very_high        +INF
+s7 .low              +INF
+s7 .normal           +INF
+s7 .high             +INF
+s7 .very_high        +INF
+s8 .low          -323.670
+s8 .normal       -521.670
+s8 .high         -625.670
+s8 .very_high    -857.670
+s9 .low          -162.670
+s9 .normal       -261.670
+s9 .high         -313.670
+s9 .very_high    -429.670
+s10.low            -1.670
+s10.normal         -1.670
+s10.high           -1.670
+s10.very_high      -1.670
+
+
+----     64 VARIABLE z.L                   =   172181.942  present value of expe
+                                                           cted cost
+
+----     64 VARIABLE v.L  present value of the profit in state (si)
+
+            low      normal        high   very_high
+
+s0     2808.336    2431.983    2371.759    2263.435
+s1     2981.827    2692.330    2688.442    2691.435
+s2     3155.318    2952.677    3005.125    3119.435
+s3     3325.914    3212.702    3319.239    3533.498
+s4     3496.510    3472.726    3633.353    3947.561
+s5     3664.063    3732.726    3945.869    4348.945
+s6     3831.617    3992.726    4258.385    4750.328
+s7     3995.972    4252.726    4570.385    5140.254
+s8     4160.326    4512.726    4882.385    5530.179
+s9     4321.326    4772.556    5194.385    5909.846
+s10    4482.326    5032.386    5506.385    6289.514
+
+
+----     64 PARAMETER td  trade ie the Kbbl bought or sold in state (si)
+
+                       s0          s1          s2          s3          s4
+
+s0 .low                                     1.000
+s0 .normal                                  1.000
+s0 .high                                    1.000
+s0 .very_high       1.000
+s1 .low                                                 1.000
+s1 .normal                                              1.000
+s1 .high                                                1.000
+s1 .very_high       1.000
+s2 .low                                                             1.000
+s2 .normal                                                          1.000
+s2 .high                                                            1.000
+s2 .very_high       1.000
+s3 .very_high                   1.000
+s4 .very_high                               1.000
+s5 .very_high                                           1.000
+s6 .very_high                                                       1.000
+
+            +          s5          s6          s7          s8          s9
+
+s3 .low             1.000
+s3 .normal          1.000
+s3 .high            1.000
+s4 .low                         1.000
+s4 .normal                      1.000
+s4 .high                        1.000
+s5 .low                                     1.000
+s5 .normal                      1.000
+s5 .high                                    1.000
+s6 .low                                                 1.000
+s6 .normal                      1.000
+s6 .high                                                1.000
+s7 .low                                                             1.000
+s7 .normal                      1.000
+s7 .high                                                1.000
+s7 .very_high       1.000
+s8 .normal                      1.000
+s8 .high                                                1.000
+s8 .very_high                   1.000
+s9 .normal                                  1.000
+s9 .high                                                1.000
+s9 .very_high                               1.000
+s10.normal                                              1.000
+s10.high                                                1.000
+s10.very_high                                           1.000
+
+            +         s10
+
+s8 .low             1.000
+s9 .low             1.000
+s10.low             1.000
+
+
+----     64 EQUATION stateValue.M  define the main equation to calculate the sta
+                                   te value
+
+                       s0          s1          s2          s3          s4
+
+s0 .low                                     1.000
+s0 .normal                                  1.000
+s0 .high                                  168.120
+s0 .very_high    1425.501
+s1 .low                                                 1.000
+s1 .normal                                              1.000
+s1 .high                                                1.424
+s1 .very_high       4.616
+s2 .low                                                             1.995
+s2 .normal                                                         20.959
+s2 .high                                                          149.459
+s2 .very_high     169.502
+s3 .very_high                   4.061
+s4 .very_high                             169.493
+s5 .very_high                                           3.270
+s6 .very_high                                                     171.672
+
+            +          s5          s6          s7          s8          s9
+
+s3 .low             1.995
+s3 .normal          2.051
+s3 .high            2.554
+s4 .low                         3.815
+s4 .normal                     35.767
+s4 .high                      137.290
+s5 .low                                     2.987
+s5 .normal                      3.112
+s5 .high                                    3.436
+s6 .low                                                99.033
+s6 .normal                   1840.441
+s6 .high                                              353.454
+s7 .low                                                             3.893
+s7 .normal                      2.510
+s7 .high                                                3.898
+s7 .very_high       2.249
+s8 .normal                    274.482
+s8 .high                                             1302.828
+s8 .very_high                 175.547
+s9 .normal                                  1.170
+s9 .high                                                1.000
+s9 .very_high                               1.000
+s10.normal                                             95.307
+s10.high                                                1.000
+s10.very_high                                           1.000
+
+            +         s10
+
+s8 .low            99.374
+s9 .low             4.703
+s10.low          2050.030
+
+
+
+EXECUTION TIME       =        0.015 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week8\coffee.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGE
+           MENT\week11\coffee.lst

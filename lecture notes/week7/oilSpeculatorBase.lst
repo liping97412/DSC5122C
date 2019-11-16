@@ -1,0 +1,638 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 1
+Petroleum Speculator
+C o m p i l a t i o n
+
+
+   2   
+       
+         This is a linear programming formulation for optimal management of petroleum
+         stockpiles by a speculator.
+       
+   9   
+  10   
+  11  Sets  s    state of inventory /s0*s11/
+  12        i    state of the oil market  / normal, disrupted, very_disrupted/
+  13   
+  14  Alias(s,sp,spp), (i,j);
+  15   
+  16   
+  17   
+  18  Scalars  b     discount factor  pr month                        /.9/
+  19           h     holding cost (us$ per month)                     /0.02/
+  20           lag   policy lag  (allowed discrete inventory jumps)   /2/;
+  21   
+  22  Table  pr(i,j)  transition probability of the world oil market per month
+  23                  normal  disrupted very_disrupted
+  24  normal            .8       .1           0.1
+  25  disrupted         .3       .5           0.2
+  26  very_disrupted    .0       .3           0.7;
+  27   
+  28   
+  29  Parameters  lev(s)      level of the inventory  (Kbbl)
+  30              price(i)  oil price (us$ per bbl)        /normal    40, disrupted  75, very_disrupted 125/
+  31              decision_profit(s,i,sp)  profit associated with each action in a given state;
+  32   
+  33   
+  34  lev(s)    = 100*(ord(s)-1);
+  35   
+  36   
+  37  decision_profit(s,i,sp) = inf;
+  38  decision_profit(s,i,sp)$(abs(ord(sp)-ord(s)) le lag) = price(i)*(lev(s)-lev(sp))-h*lev(sp);
+  39   
+  40   
+  41   
+  42  Display lev, price, decision_profit;
+  43   
+  44  Variables  v(s,i) present value of the profit in state (si)
+  45             z      present value of expected cost;
+  46   
+  47  Equations  stateValue(s,i,sp) define the main equation to calculate the state value
+  48             profit             profit definition;
+  49   
+  50   
+  51  stateValue(s,i,sp)$(abs(ord(sp)-ord(s))le lag)..v(s,i)-b*sum(j,pr(i,j)*v(sp,j))=g=decision_profit(s,i,sp);
+  52   
+  53  profit..   z =e= sum((s,i),v(s,i));
+  54   
+  55  Model strategic / all /;
+  56  Solve strategic using lp minimizing z;
+  57   
+  58   
+  59  Parameters td(s,i,sp) trade ie the Kbbl bought or sold in state (si);
+  60   
+  61  td(s,i,sp) = 1$ (stateValue.m(s,i,sp)>0);
+  62   
+  63  Display  decision_profit, z.l, v.l, td, stateValue.m;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 2
+Petroleum Speculator
+E x e c u t i o n
+
+
+----     42 PARAMETER lev  level of the inventory  (Kbbl)
+
+s1   100.000,    s2   200.000,    s3   300.000,    s4   400.000,    s5   500.000,    s6   600.000,    s7   700.000,    s8   800.000,    s9   900.000,    s10 1000.000,    s11 1100.000
+
+
+----     42 PARAMETER price  oil price (us$ per bbl)
+
+normal          40.000,    disrupted       75.000,    very_disrupted 125.000
+
+
+----     42 PARAMETER decision_profit  profit associated with each action in a given state
+
+                            s0          s1          s2          s3          s4          s5          s6          s7          s8          s9         s10         s11
+
+s0 .normal                       -4002.000   -8004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s0 .disrupted                    -7502.000  -15004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s0 .very_disrupted              -12502.000  -25004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .normal            4000.000      -2.000   -4004.000   -8006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .disrupted         7500.000      -2.000   -7504.000  -15006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .very_disrupted   12500.000      -2.000  -12504.000  -25006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .normal            8000.000    3998.000      -4.000   -4006.000   -8008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .disrupted        15000.000    7498.000      -4.000   -7506.000  -15008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .very_disrupted   25000.000   12498.000      -4.000  -12506.000  -25008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .normal                +INF    7998.000    3996.000      -6.000   -4008.000   -8010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .disrupted             +INF   14998.000    7496.000      -6.000   -7508.000  -15010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .very_disrupted        +INF   24998.000   12496.000      -6.000  -12508.000  -25010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s4 .normal                +INF        +INF    7996.000    3994.000      -8.000   -4010.000   -8012.000        +INF        +INF        +INF        +INF        +INF
+s4 .disrupted             +INF        +INF   14996.000    7494.000      -8.000   -7510.000  -15012.000        +INF        +INF        +INF        +INF        +INF
+s4 .very_disrupted        +INF        +INF   24996.000   12494.000      -8.000  -12510.000  -25012.000        +INF        +INF        +INF        +INF        +INF
+s5 .normal                +INF        +INF        +INF    7994.000    3992.000     -10.000   -4012.000   -8014.000        +INF        +INF        +INF        +INF
+s5 .disrupted             +INF        +INF        +INF   14994.000    7492.000     -10.000   -7512.000  -15014.000        +INF        +INF        +INF        +INF
+s5 .very_disrupted        +INF        +INF        +INF   24994.000   12492.000     -10.000  -12512.000  -25014.000        +INF        +INF        +INF        +INF
+s6 .normal                +INF        +INF        +INF        +INF    7992.000    3990.000     -12.000   -4014.000   -8016.000        +INF        +INF        +INF
+s6 .disrupted             +INF        +INF        +INF        +INF   14992.000    7490.000     -12.000   -7514.000  -15016.000        +INF        +INF        +INF
+s6 .very_disrupted        +INF        +INF        +INF        +INF   24992.000   12490.000     -12.000  -12514.000  -25016.000        +INF        +INF        +INF
+s7 .normal                +INF        +INF        +INF        +INF        +INF    7990.000    3988.000     -14.000   -4016.000   -8018.000        +INF        +INF
+s7 .disrupted             +INF        +INF        +INF        +INF        +INF   14990.000    7488.000     -14.000   -7516.000  -15018.000        +INF        +INF
+s7 .very_disrupted        +INF        +INF        +INF        +INF        +INF   24990.000   12488.000     -14.000  -12516.000  -25018.000        +INF        +INF
+s8 .normal                +INF        +INF        +INF        +INF        +INF        +INF    7988.000    3986.000     -16.000   -4018.000   -8020.000        +INF
+s8 .disrupted             +INF        +INF        +INF        +INF        +INF        +INF   14988.000    7486.000     -16.000   -7518.000  -15020.000        +INF
+s8 .very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF   24988.000   12486.000     -16.000  -12518.000  -25020.000        +INF
+s9 .normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF    7986.000    3984.000     -18.000   -4020.000   -8022.000
+s9 .disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF   14986.000    7484.000     -18.000   -7520.000  -15022.000
+s9 .very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24986.000   12484.000     -18.000  -12520.000  -25022.000
+s10.normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF    7984.000    3982.000     -20.000   -4022.000
+s10.disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   14984.000    7482.000     -20.000   -7522.000
+s10.very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24984.000   12482.000     -20.000  -12522.000
+s11.normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF    7982.000    3980.000     -22.000
+s11.disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   14982.000    7480.000     -22.000
+s11.very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24982.000   12480.000     -22.000
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 3
+Petroleum Speculator
+Equation Listing    SOLVE strategic Using LP From line 56
+
+
+---- stateValue  =G=  define the main equation to calculate the state value
+
+stateValue(s0,normal,s0)..  0.28*v(s0,normal) - 0.09*v(s0,disrupted) - 0.09*v(s0,very_disrupted) =G= 0 ; (LHS = 0)
+     
+stateValue(s0,normal,s1)..  v(s0,normal) - 0.72*v(s1,normal) - 0.09*v(s1,disrupted) - 0.09*v(s1,very_disrupted) =G= -4002 ; (LHS = 0)
+     
+stateValue(s0,normal,s2)..  v(s0,normal) - 0.72*v(s2,normal) - 0.09*v(s2,disrupted) - 0.09*v(s2,very_disrupted) =G= -8004 ; (LHS = 0)
+     
+REMAINING 159 ENTRIES SKIPPED
+
+
+---- profit  =E=  profit definition
+
+profit..  - v(s0,normal) - v(s0,disrupted) - v(s0,very_disrupted) - v(s1,normal) - v(s1,disrupted) - v(s1,very_disrupted) - v(s2,normal) - v(s2,disrupted) - v(s2,very_disrupted) - v(s3,normal) - v(s3,disrupted) - v(s3,very_disrupted) - v(s4,normal)
+     
+      - v(s4,disrupted) - v(s4,very_disrupted) - v(s5,normal) - v(s5,disrupted) - v(s5,very_disrupted) - v(s6,normal) - v(s6,disrupted) - v(s6,very_disrupted) - v(s7,normal) - v(s7,disrupted) - v(s7,very_disrupted) - v(s8,normal) - v(s8,disrupted)
+     
+      - v(s8,very_disrupted) - v(s9,normal) - v(s9,disrupted) - v(s9,very_disrupted) - v(s10,normal) - v(s10,disrupted) - v(s10,very_disrupted) - v(s11,normal) - v(s11,disrupted) - v(s11,very_disrupted) + z =E= 0 ; (LHS = 0)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 4
+Petroleum Speculator
+Column Listing      SOLVE strategic Using LP From line 56
+
+
+---- v  present value of the profit in state (si)
+
+v(s0,normal)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        0.28    stateValue(s0,normal,s0)
+        1       stateValue(s0,normal,s1)
+        1       stateValue(s0,normal,s2)
+       -0.27    stateValue(s0,disrupted,s0)
+       -0.72    stateValue(s1,normal,s0)
+       -0.27    stateValue(s1,disrupted,s0)
+       -0.72    stateValue(s2,normal,s0)
+       -0.27    stateValue(s2,disrupted,s0)
+       -1       profit
+
+v(s0,disrupted)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -0.09    stateValue(s0,normal,s0)
+        0.55    stateValue(s0,disrupted,s0)
+        1       stateValue(s0,disrupted,s1)
+        1       stateValue(s0,disrupted,s2)
+       -0.27    stateValue(s0,very_disrupted,s0)
+       -0.09    stateValue(s1,normal,s0)
+       -0.45    stateValue(s1,disrupted,s0)
+       -0.27    stateValue(s1,very_disrupted,s0)
+       -0.09    stateValue(s2,normal,s0)
+       -0.45    stateValue(s2,disrupted,s0)
+       -0.27    stateValue(s2,very_disrupted,s0)
+       -1       profit
+
+v(s0,very_disrupted)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -0.09    stateValue(s0,normal,s0)
+       -0.18    stateValue(s0,disrupted,s0)
+        0.37    stateValue(s0,very_disrupted,s0)
+        1       stateValue(s0,very_disrupted,s1)
+        1       stateValue(s0,very_disrupted,s2)
+       -0.09    stateValue(s1,normal,s0)
+       -0.18    stateValue(s1,disrupted,s0)
+       -0.63    stateValue(s1,very_disrupted,s0)
+       -0.09    stateValue(s2,normal,s0)
+       -0.18    stateValue(s2,disrupted,s0)
+       -0.63    stateValue(s2,very_disrupted,s0)
+       -1       profit
+
+REMAINING 33 ENTRIES SKIPPED
+
+---- z  present value of expected cost
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       profit
+
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 5
+Petroleum Speculator
+Model Statistics    SOLVE strategic Using LP From line 56
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS          163
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           37
+NON ZERO ELEMENTS           595
+
+
+GENERATION TIME      =        0.094 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.094 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 6
+Petroleum Speculator
+Solution Report     SOLVE strategic Using LP From line 56
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   strategic           OBJECTIVE  z
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  56
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE          1621599.3097
+
+ RESOURCE USAGE, LIMIT          1.498      1000.000
+ ITERATION COUNT, LIMIT        67    2000000000
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+Cplex 12.8.0.0
+
+Space for names approximately 0.01 Mb
+Use option 'names no' to turn use of names off
+LP status(1): optimal
+Cplex Time: 0.83sec (det. 0.73 ticks)
+Optimal solution found.
+Objective :     1621599.309700
+
+
+---- EQU stateValue  define the main equation to calculate the state value
+
+                              LOWER          LEVEL          UPPER         MARGINAL
+
+s0 .normal        .s0           .          2056.8352        +INF             .          
+s0 .normal        .s1      -4002.0000     -2973.5824        +INF             .          
+s0 .normal        .s2      -8004.0000     -8004.0000        +INF           18.7823      
+s0 .disrupted     .s0           .              .            +INF           51.6729      
+s0 .disrupted     .s1      -7502.0000     -6836.4066        +INF             .          
+s0 .disrupted     .s2     -15004.0000    -13672.8132        +INF             .          
+s0 .very_disrupted.s0           .              .            +INF           61.9382      
+s0 .very_disrupted.s1     -12502.0000     -9900.0000        +INF             .          
+s0 .very_disrupted.s2     -25004.0000    -19800.0000        +INF             .          
+s1 .normal        .s0       4000.0000      6543.5263        +INF             .          
+s1 .normal        .s1         -2.0000      1513.1087        +INF             .          
+s1 .normal        .s2      -4004.0000     -3517.3089        +INF             .          
+s1 .normal        .s3      -8006.0000     -8006.0000        +INF            1.9514      
+s1 .disrupted     .s0       7500.0000      7500.0000        +INF            3.6425      
+s1 .disrupted     .s1         -2.0000       663.5934        +INF             .          
+s1 .disrupted     .s2      -7504.0000     -6172.8132        +INF             .          
+s1 .disrupted     .s3     -15006.0000    -12148.4766        +INF             .          
+s1 .very_disrupted.s0      12500.0000     12500.0000        +INF            4.1001      
+s1 .very_disrupted.s1         -2.0000      2600.0000        +INF             .          
+s1 .very_disrupted.s2     -12504.0000     -7300.0000        +INF             .          
+s1 .very_disrupted.s3     -25006.0000    -15381.0298        +INF             .          
+s2 .normal        .s0       8000.0000     11030.2174        +INF             .          
+s2 .normal        .s1       3998.0000      5999.7998        +INF             .          
+s2 .normal        .s2         -4.0000       969.3822        +INF             .          
+s2 .normal        .s3      -4006.0000     -3519.3089        +INF             .          
+s2 .normal        .s4      -8008.0000     -8008.0000        +INF           17.3616      
+s2 .disrupted     .s0      15000.0000     15000.0000        +INF           10.5450      
+s2 .disrupted     .s1       7498.0000      8163.5934        +INF             .          
+s2 .disrupted     .s2         -4.0000      1327.1868        +INF             .          
+s2 .disrupted     .s3      -7506.0000     -4648.4766        +INF             .          
+s2 .disrupted     .s4     -15008.0000    -10624.1400        +INF             .          
+s2 .very_disrupted.s0      25000.0000     25000.0000        +INF           11.8718      
+s2 .very_disrupted.s1      12498.0000     15100.0000        +INF             .          
+s2 .very_disrupted.s2         -4.0000      5200.0000        +INF             .          
+s2 .very_disrupted.s3     -12506.0000     -2881.0298        +INF             .          
+s2 .very_disrupted.s4     -25008.0000    -10962.0596        +INF             .          
+s3 .normal        .s1       7998.0000     10142.5422        +INF             .          
+s3 .normal        .s2       3996.0000      5112.1246        +INF             .          
+s3 .normal        .s3         -6.0000       623.4335        +INF             .          
+s3 .normal        .s4      -4008.0000     -3865.2576        +INF             .          
+s3 .normal        .s5      -8010.0000     -8010.0000        +INF            3.2557      
+s3 .disrupted     .s1      14998.0000     14998.0000        +INF            3.5239      
+s3 .disrupted     .s2       7496.0000      8161.5934        +INF             .          
+s3 .disrupted     .s3         -6.0000      2185.9300        +INF             .          
+s3 .disrupted     .s4      -7508.0000     -3789.7334        +INF             .          
+s3 .disrupted     .s5     -15010.0000     -9012.1073        +INF             .          
+s3 .very_disrupted.s1      24998.0000     24998.0000        +INF            3.9139      
+s3 .very_disrupted.s2      12496.0000     15098.0000        +INF             .          
+s3 .very_disrupted.s3         -6.0000      7016.9702        +INF             .          
+s3 .very_disrupted.s4     -12508.0000     -1064.0596        +INF             .          
+s3 .very_disrupted.s5     -25010.0000     -7766.7374        +INF             .          
+s4 .normal        .s2       7996.0000      9254.8670        +INF             .          
+s4 .normal        .s3       3994.0000      4766.1759        +INF             .          
+s4 .normal        .s4         -8.0000       277.4848        +INF             .          
+s4 .normal        .s5      -4010.0000     -3867.2576        +INF             .          
+s4 .normal        .s6      -8012.0000     -8012.0000        +INF           16.4619      
+s4 .disrupted     .s2      14996.0000     14996.0000        +INF           10.5126      
+s4 .disrupted     .s3       7494.0000      9020.3366        +INF             .          
+s4 .disrupted     .s4         -8.0000      3044.6732        +INF             .          
+s4 .disrupted     .s5      -7510.0000     -2177.7007        +INF             .          
+s4 .disrupted     .s6     -15012.0000     -7400.0746        +INF             .          
+s4 .very_disrupted.s2      24996.0000     24996.0000        +INF           11.5700      
+s4 .very_disrupted.s3      12494.0000     16914.9702        +INF             .          
+s4 .very_disrupted.s4         -8.0000      8833.9404        +INF             .          
+s4 .very_disrupted.s5     -12510.0000      2131.2626        +INF             .          
+s4 .very_disrupted.s6     -25012.0000     -4571.4153        +INF             .          
+s5 .normal        .s3       7994.0000      8766.1759        +INF             .          
+s5 .normal        .s4       3992.0000      4277.4848        +INF             .          
+s5 .normal        .s5        -10.0000       132.7424        +INF             .          
+s5 .normal        .s6      -4012.0000     -4012.0000        +INF            4.0209      
+s5 .normal        .s7      -8014.0000     -7964.8947        +INF             .          
+s5 .disrupted     .s3      14994.0000     14994.0000        +INF            3.1505      
+s5 .disrupted     .s4       7492.0000      9018.3366        +INF             .          
+s5 .disrupted     .s5        -10.0000      3795.9627        +INF             .          
+s5 .disrupted     .s6      -7512.0000     -1426.4112        +INF             .          
+s5 .disrupted     .s7     -15014.0000     -6061.7015        +INF             .          
+s5 .very_disrupted.s3      24994.0000     24994.0000        +INF            3.4464      
+s5 .very_disrupted.s4      12492.0000     16912.9702        +INF             .          
+s5 .very_disrupted.s5        -10.0000     10210.2923        +INF             .          
+s5 .very_disrupted.s6     -12512.0000      3507.6144        +INF             .          
+s5 .very_disrupted.s7     -25014.0000     -2123.3136        +INF             .          
+s6 .normal        .s4       7992.0000      8277.4848        +INF             .          
+s6 .normal        .s5       3990.0000      4132.7424        +INF             .          
+s6 .normal        .s6        -12.0000       -12.0000        +INF           70.6162      
+s6 .normal        .s7      -4014.0000     -3964.8947        +INF             .          
+s6 .normal        .s8      -8016.0000     -7917.7893        +INF             .          
+s6 .disrupted     .s4      14992.0000     14992.0000        +INF           10.9684      
+s6 .disrupted     .s5       7490.0000      9769.6261        +INF             .          
+s6 .disrupted     .s6        -12.0000      4547.2522        +INF             .          
+s6 .disrupted     .s7      -7514.0000       -88.0381        +INF             .          
+s6 .disrupted     .s8     -15016.0000     -4723.3283        +INF             .          
+s6 .very_disrupted.s4      24992.0000     24992.0000        +INF           11.1637      
+s6 .very_disrupted.s5      12490.0000     18289.3221        +INF             .          
+s6 .very_disrupted.s6        -12.0000     11586.6442        +INF             .          
+s6 .very_disrupted.s7     -12514.0000      5955.7162        +INF             .          
+s6 .very_disrupted.s8     -25016.0000       324.7882        +INF             .          
+s7 .normal        .s5       7990.0000      8132.7424        +INF             .          
+s7 .normal        .s6       3988.0000      3988.0000        +INF            2.9215      
+s7 .normal        .s7        -14.0000        35.1053        +INF             .          
+s7 .normal        .s8      -4016.0000     -3917.7893        +INF             .          
+s7 .normal        .s9      -8018.0000     -7686.0331        +INF             .          
+s7 .disrupted     .s5      14990.0000     14990.0000        +INF            2.5066      
+s7 .disrupted     .s6       7488.0000      9767.6261        +INF             .          
+s7 .disrupted     .s7        -14.0000      5132.3358        +INF             .          
+s7 .disrupted     .s8      -7516.0000       497.0456        +INF             .          
+s7 .disrupted     .s9     -15018.0000     -3667.8837        +INF             .          
+s7 .very_disrupted.s5      24990.0000     24990.0000        +INF            2.7019      
+s7 .very_disrupted.s6      12488.0000     18287.3221        +INF             .          
+s7 .very_disrupted.s7        -14.0000     12656.3941        +INF             .          
+s7 .very_disrupted.s8     -12516.0000      7025.4661        +INF             .          
+s7 .very_disrupted.s9     -25018.0000      2228.2530        +INF             .          
+s8 .normal        .s6       7988.0000      7988.0000        +INF            1.9900      
+s8 .normal        .s7       3986.0000      4035.1053        +INF             .          
+s8 .normal        .s8        -16.0000        82.2107        +INF             .          
+s8 .normal        .s9      -4018.0000     -3686.0331        +INF             .          
+s8 .normal        .s10     -8020.0000     -7454.2769        +INF             .          
+s8 .disrupted     .s6      14988.0000     14988.0000        +INF            1.8100      
+s8 .disrupted     .s7       7486.0000     10352.7097        +INF             .          
+s8 .disrupted     .s8        -16.0000      5717.4195        +INF             .          
+s8 .disrupted     .s9      -7518.0000      1552.4902        +INF             .          
+s8 .disrupted     .s10    -15020.0000     -2612.4390        +INF             .          
+s8 .very_disrupted.s6      24988.0000     24988.0000        +INF            1.9000      
+s8 .very_disrupted.s7      12486.0000     19357.0720        +INF             .          
+s8 .very_disrupted.s8        -16.0000     13726.1440        +INF             .          
+s8 .very_disrupted.s9     -12518.0000      8928.9309        +INF             .          
+s8 .very_disrupted.s10    -25020.0000      4131.7179        +INF             .          
+s9 .normal        .s7       7986.0000      7986.0000        +INF            1.9900      
+s9 .normal        .s8       3984.0000      4033.1053        +INF             .          
+s9 .normal        .s9        -18.0000       264.8615        +INF             .          
+s9 .normal        .s10     -4020.0000     -3503.3823        +INF             .          
+s9 .normal        .s11     -8022.0000     -7021.3106        +INF             .          
+s9 .disrupted     .s7      14986.0000     14986.0000        +INF            1.8100      
+s9 .disrupted     .s8       7484.0000     10350.7097        +INF             .          
+s9 .disrupted     .s9        -18.0000      6185.7805        +INF             .          
+s9 .disrupted     .s10     -7520.0000      2020.8513        +INF             .          
+s9 .disrupted     .s11    -15022.0000     -1732.4910        +INF             .          
+s9 .very_disrupted.s7      24986.0000     24986.0000        +INF            1.9000      
+s9 .very_disrupted.s8      12484.0000     19355.0720        +INF             .          
+s9 .very_disrupted.s9        -18.0000     14557.8590        +INF             .          
+s9 .very_disrupted.s10    -12520.0000      9760.6459        +INF             .          
+s9 .very_disrupted.s11    -25022.0000      5615.6708        +INF             .          
+s10.normal        .s8       7984.0000      7984.0000        +INF            1.0000      
+s10.normal        .s9       3982.0000      4215.7562        +INF             .          
+s10.normal        .s10       -20.0000       447.5124        +INF             .          
+s10.normal        .s11     -4022.0000     -3070.4159        +INF             .          
+s10.disrupted     .s8      14984.0000     14984.0000        +INF            1.0000      
+s10.disrupted     .s9       7482.0000     10819.0708        +INF             .          
+s10.disrupted     .s10       -20.0000      6654.1416        +INF             .          
+s10.disrupted     .s11     -7522.0000      2900.7992        +INF             .          
+s10.very_disrupted.s8      24984.0000     24984.0000        +INF            1.0000      
+s10.very_disrupted.s9      12482.0000     20186.7870        +INF             .          
+s10.very_disrupted.s10       -20.0000     15389.5739        +INF             .          
+s10.very_disrupted.s11    -12522.0000     11244.5989        +INF             .          
+s11.normal        .s9       7982.0000      7982.0000        +INF            1.0000      
+s11.normal        .s10      3980.0000      4213.7562        +INF             .          
+s11.normal        .s11       -22.0000       695.8279        +INF             .          
+s11.disrupted     .s9      14982.0000     14982.0000        +INF            1.0000      
+s11.disrupted     .s10      7480.0000     10817.0708        +INF             .          
+s11.disrupted     .s11       -22.0000      7063.7285        +INF             .          
+s11.very_disrupted.s9      24982.0000     24982.0000        +INF            1.0000      
+s11.very_disrupted.s10     12480.0000     20184.7870        +INF             .          
+s11.very_disrupted.s11       -22.0000     16039.8119        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU profit              .              .              .             1.0000      
+
+  profit  profit definition
+
+---- VAR v  present value of the profit in state (si)
+
+                          LOWER          LEVEL          UPPER         MARGINAL
+
+s0 .normal                -INF        11452.3283        +INF             .          
+s0 .disrupted             -INF         7385.9754        +INF             .          
+s0 .very_disrupted        -INF         5389.7659        +INF             .          
+s1 .normal                -INF        15939.0194        +INF             .          
+s1 .disrupted             -INF        14885.9754        +INF             .          
+s1 .very_disrupted        -INF        17889.7659        +INF             .          
+s2 .normal                -INF        20425.7105        +INF             .          
+s2 .disrupted             -INF        22385.9754        +INF             .          
+s2 .very_disrupted        -INF        30389.7659        +INF             .          
+s3 .normal                -INF        24568.4529        +INF             .          
+s3 .disrupted             -INF        29220.3820        +INF             .          
+s3 .very_disrupted        -INF        40287.7659        +INF             .          
+s4 .normal                -INF        28711.1953        +INF             .          
+s4 .disrupted             -INF        36054.7886        +INF             .          
+s4 .very_disrupted        -INF        50185.7659        +INF             .          
+s5 .normal                -INF        32711.1953        +INF             .          
+s5 .disrupted             -INF        42028.4521        +INF             .          
+s5 .very_disrupted        -INF        58264.7956        +INF             .          
+s6 .normal                -INF        36711.1953        +INF             .          
+s6 .disrupted             -INF        48002.1155        +INF             .          
+s6 .very_disrupted        -INF        66343.8254        +INF             .          
+s7 .normal                -INF        40711.1953        +INF             .          
+s7 .disrupted             -INF        53222.4894        +INF             .          
+s7 .very_disrupted        -INF        73044.5033        +INF             .          
+s8 .normal                -INF        44711.1953        +INF             .          
+s8 .disrupted             -INF        58442.8633        +INF             .          
+s8 .very_disrupted        -INF        79745.1812        +INF             .          
+s9 .normal                -INF        48662.0899        +INF             .          
+s9 .disrupted             -INF        63076.1535        +INF             .          
+s9 .very_disrupted        -INF        85374.1092        +INF             .          
+s10.normal                -INF        52612.9846        +INF             .          
+s10.disrupted             -INF        67709.4438        +INF             .          
+s10.very_disrupted        -INF        91003.0372        +INF             .          
+s11.normal                -INF        56379.2284        +INF             .          
+s11.disrupted             -INF        71872.3730        +INF             .          
+s11.very_disrupted        -INF        95798.2503        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF      1621599.3097        +INF             .          
+
+  z  present value of expected cost
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 03/06/19 19:39:42 Page 7
+Petroleum Speculator
+E x e c u t i o n
+
+
+----     63 PARAMETER decision_profit  profit associated with each action in a given state
+
+                            s0          s1          s2          s3          s4          s5          s6          s7          s8          s9         s10         s11
+
+s0 .normal                       -4002.000   -8004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s0 .disrupted                    -7502.000  -15004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s0 .very_disrupted              -12502.000  -25004.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .normal            4000.000      -2.000   -4004.000   -8006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .disrupted         7500.000      -2.000   -7504.000  -15006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s1 .very_disrupted   12500.000      -2.000  -12504.000  -25006.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .normal            8000.000    3998.000      -4.000   -4006.000   -8008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .disrupted        15000.000    7498.000      -4.000   -7506.000  -15008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s2 .very_disrupted   25000.000   12498.000      -4.000  -12506.000  -25008.000        +INF        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .normal                +INF    7998.000    3996.000      -6.000   -4008.000   -8010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .disrupted             +INF   14998.000    7496.000      -6.000   -7508.000  -15010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s3 .very_disrupted        +INF   24998.000   12496.000      -6.000  -12508.000  -25010.000        +INF        +INF        +INF        +INF        +INF        +INF
+s4 .normal                +INF        +INF    7996.000    3994.000      -8.000   -4010.000   -8012.000        +INF        +INF        +INF        +INF        +INF
+s4 .disrupted             +INF        +INF   14996.000    7494.000      -8.000   -7510.000  -15012.000        +INF        +INF        +INF        +INF        +INF
+s4 .very_disrupted        +INF        +INF   24996.000   12494.000      -8.000  -12510.000  -25012.000        +INF        +INF        +INF        +INF        +INF
+s5 .normal                +INF        +INF        +INF    7994.000    3992.000     -10.000   -4012.000   -8014.000        +INF        +INF        +INF        +INF
+s5 .disrupted             +INF        +INF        +INF   14994.000    7492.000     -10.000   -7512.000  -15014.000        +INF        +INF        +INF        +INF
+s5 .very_disrupted        +INF        +INF        +INF   24994.000   12492.000     -10.000  -12512.000  -25014.000        +INF        +INF        +INF        +INF
+s6 .normal                +INF        +INF        +INF        +INF    7992.000    3990.000     -12.000   -4014.000   -8016.000        +INF        +INF        +INF
+s6 .disrupted             +INF        +INF        +INF        +INF   14992.000    7490.000     -12.000   -7514.000  -15016.000        +INF        +INF        +INF
+s6 .very_disrupted        +INF        +INF        +INF        +INF   24992.000   12490.000     -12.000  -12514.000  -25016.000        +INF        +INF        +INF
+s7 .normal                +INF        +INF        +INF        +INF        +INF    7990.000    3988.000     -14.000   -4016.000   -8018.000        +INF        +INF
+s7 .disrupted             +INF        +INF        +INF        +INF        +INF   14990.000    7488.000     -14.000   -7516.000  -15018.000        +INF        +INF
+s7 .very_disrupted        +INF        +INF        +INF        +INF        +INF   24990.000   12488.000     -14.000  -12516.000  -25018.000        +INF        +INF
+s8 .normal                +INF        +INF        +INF        +INF        +INF        +INF    7988.000    3986.000     -16.000   -4018.000   -8020.000        +INF
+s8 .disrupted             +INF        +INF        +INF        +INF        +INF        +INF   14988.000    7486.000     -16.000   -7518.000  -15020.000        +INF
+s8 .very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF   24988.000   12486.000     -16.000  -12518.000  -25020.000        +INF
+s9 .normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF    7986.000    3984.000     -18.000   -4020.000   -8022.000
+s9 .disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF   14986.000    7484.000     -18.000   -7520.000  -15022.000
+s9 .very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24986.000   12484.000     -18.000  -12520.000  -25022.000
+s10.normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF    7984.000    3982.000     -20.000   -4022.000
+s10.disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   14984.000    7482.000     -20.000   -7522.000
+s10.very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24984.000   12482.000     -20.000  -12522.000
+s11.normal                +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF    7982.000    3980.000     -22.000
+s11.disrupted             +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   14982.000    7480.000     -22.000
+s11.very_disrupted        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF        +INF   24982.000   12480.000     -22.000
+
+
+----     63 VARIABLE z.L                   =  1621599.310  present value of expected cost
+
+----     63 VARIABLE v.L  present value of the profit in state (si)
+
+         normal   disrupted  very_disr~
+
+s0    11452.328    7385.975    5389.766
+s1    15939.019   14885.975   17889.766
+s2    20425.711   22385.975   30389.766
+s3    24568.453   29220.382   40287.766
+s4    28711.195   36054.789   50185.766
+s5    32711.195   42028.452   58264.796
+s6    36711.195   48002.115   66343.825
+s7    40711.195   53222.489   73044.503
+s8    44711.195   58442.863   79745.181
+s9    48662.090   63076.154   85374.109
+s10   52612.985   67709.444   91003.037
+s11   56379.228   71872.373   95798.250
+
+
+----     63 PARAMETER td  trade ie the Kbbl bought or sold in state (si)
+
+                            s0          s1          s2          s3          s4          s5          s6          s7          s8          s9
+
+s0 .normal                                       1.000
+s0 .disrupted            1.000
+s0 .very_disrupted       1.000
+s1 .normal                                                   1.000
+s1 .disrupted            1.000
+s1 .very_disrupted       1.000
+s2 .normal                                                               1.000
+s2 .disrupted            1.000
+s2 .very_disrupted       1.000
+s3 .normal                                                                           1.000
+s3 .disrupted                        1.000
+s3 .very_disrupted                   1.000
+s4 .normal                                                                                       1.000
+s4 .disrupted                                    1.000
+s4 .very_disrupted                               1.000
+s5 .normal                                                                                       1.000
+s5 .disrupted                                                1.000
+s5 .very_disrupted                                           1.000
+s6 .normal                                                                                       1.000
+s6 .disrupted                                                            1.000
+s6 .very_disrupted                                                       1.000
+s7 .normal                                                                                       1.000
+s7 .disrupted                                                                        1.000
+s7 .very_disrupted                                                                   1.000
+s8 .normal                                                                                       1.000
+s8 .disrupted                                                                                    1.000
+s8 .very_disrupted                                                                               1.000
+s9 .normal                                                                                                   1.000
+s9 .disrupted                                                                                                1.000
+s9 .very_disrupted                                                                                           1.000
+s10.normal                                                                                                               1.000
+s10.disrupted                                                                                                            1.000
+s10.very_disrupted                                                                                                       1.000
+s11.normal                                                                                                                           1.000
+s11.disrupted                                                                                                                        1.000
+s11.very_disrupted                                                                                                                   1.000
+
+
+----     63 EQUATION stateValue.M  define the main equation to calculate the state value
+
+                            s0          s1          s2          s3          s4          s5          s6          s7          s8          s9
+
+s0 .normal                                      18.782
+s0 .disrupted           51.673
+s0 .very_disrupted      61.938
+s1 .normal                                                   1.951
+s1 .disrupted            3.643
+s1 .very_disrupted       4.100
+s2 .normal                                                              17.362
+s2 .disrupted           10.545
+s2 .very_disrupted      11.872
+s3 .normal                                                                           3.256
+s3 .disrupted                        3.524
+s3 .very_disrupted                   3.914
+s4 .normal                                                                                      16.462
+s4 .disrupted                                   10.513
+s4 .very_disrupted                              11.570
+s5 .normal                                                                                       4.021
+s5 .disrupted                                                3.150
+s5 .very_disrupted                                           3.446
+s6 .normal                                                                                      70.616
+s6 .disrupted                                                           10.968
+s6 .very_disrupted                                                      11.164
+s7 .normal                                                                                       2.922
+s7 .disrupted                                                                        2.507
+s7 .very_disrupted                                                                   2.702
+s8 .normal                                                                                       1.990
+s8 .disrupted                                                                                    1.810
+s8 .very_disrupted                                                                               1.900
+s9 .normal                                                                                                   1.990
+s9 .disrupted                                                                                                1.810
+s9 .very_disrupted                                                                                           1.900
+s10.normal                                                                                                               1.000
+s10.disrupted                                                                                                            1.000
+s10.very_disrupted                                                                                                       1.000
+s11.normal                                                                                                                           1.000
+s11.disrupted                                                                                                                        1.000
+s11.very_disrupted                                                                                                                   1.000
+
+
+
+EXECUTION TIME       =        0.016 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week7\oilSpeculatorBase.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week7\oilSpeculatorBase.lst

@@ -1,0 +1,394 @@
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 1
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+C o m p i l a t i o n
+
+
+       
+      Cattle feed problem with chance constraints. Two problems are
+      formulated, a deterministic model and the chance constraint
+      version deterministic equivalent.
+       
+       
+      Bracken, J, and McCormick, G P, Chapter 9. In Selected Applications of
+      Nonlinear Programming. John Wiley and Sons, New York, 1968, pp. 94-100.
+       
+  13   
+  14  sets f  feeds     / barley, oats, sesame, grnd-meal /
+  15       n  nutrients / protein, fats /
+  16   
+  17  parameters  price(f)  feed prices (fgld per ton) / barley    24.55
+  18                                                     oats      26.75
+  19                                                     sesame    39.00
+  20                                                     grnd-meal 40.50 /
+  21              req(n)    requirements (pct) / protein = 21, fats = 5 /;
+  22   
+  23   
+  24  table char(*,n,f) feed characteristics (pct)
+  25                   barley    oats     sesame    grnd-meal
+  26  mean.protein     12.0      11.9      41.8       52.1
+  27  mean.fats         2.3       5.6      11.1        1.3
+  28  variance.protein   .28       .19     20.5         .62;
+  29   
+  30  variables  cost   total cost per ton
+  31              x(f)   feed mix (pct);
+  32   
+  33  positive variable x;
+  34   
+  35  equations   cdef   costdefinition
+  36              mc     mix constraint
+  37              nbal(n) nutrient balance
+  38              cc(n)   chance constraint ;
+  39   
+  40  cdef..  cost =e= sum(f, price(f)*x(f));
+  41   
+  42  mc..    sum(f, x(f)) =e= 1;
+  43   
+  44  nbal(n).. sum(f, char("mean",n,f)*x(f)) =g= req(n);
+  45   
+  46  **cc(n)..   sum(f, char("mean",n,f)*x(f)) - 1.645*sqrt(sum(f, char("variance",n,f)*sqr(x(f)))) =g= req(n);
+  47  **cc(n)..   sum(f, char("mean",n,f)*x(f)) - 1.96*sqrt(sum(f, char("variance",n,f)*sqr(x(f)))) =g= req(n);
+  48  cc(n)..   sum(f, char("mean",n,f)*x(f)) - 3.0*sqrt(sum(f, char("variance",n,f)*sqr(x(f)))) =g= req(n);
+  49   
+  50   
+  51  models det    deterministic model / cdef, mc, nbal /
+  52         chance chance model        / cdef, mc, cc /
+  53   
+  54  parameter mix Mixing report
+  55            costR cost report;
+  56   
+  57  solve det    minimizing cost using lp;
+  58  mix(f,'det   ') = x.l(f);
+  59  costR('det   ') = cost.l;
+  60   
+  61   
+  62  solve chance minimizing cost using nlp;
+  63  mix(f,'chance') = x.l(f);
+  64  costR('chance') = cost.l;
+  65   
+  66  display mix, costR;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 2
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Equation Listing    SOLVE det Using LP From line 57
+
+
+---- cdef  =E=  costdefinition
+
+cdef..  cost - 24.55*x(barley) - 26.75*x(oats) - 39*x(sesame) - 40.5*x(grnd-meal) =E= 0 ; (LHS = 0)
+     
+
+---- mc  =E=  mix constraint
+
+mc..  x(barley) + x(oats) + x(sesame) + x(grnd-meal) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+
+---- nbal  =G=  nutrient balance
+
+nbal(protein)..  12*x(barley) + 11.9*x(oats) + 41.8*x(sesame) + 52.1*x(grnd-meal) =G= 21 ; (LHS = 0, INFES = 21 ****)
+     
+nbal(fats)..  2.3*x(barley) + 5.6*x(oats) + 11.1*x(sesame) + 1.3*x(grnd-meal) =G= 5 ; (LHS = 0, INFES = 5 ****)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 3
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Column Listing      SOLVE det Using LP From line 57
+
+
+---- cost  total cost per ton
+
+cost
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       cdef
+
+
+---- x  feed mix (pct)
+
+x(barley)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -24.55    cdef
+        1       mc
+       12       nbal(protein)
+        2.3     nbal(fats)
+
+x(oats)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -26.75    cdef
+        1       mc
+       11.9     nbal(protein)
+        5.6     nbal(fats)
+
+x(sesame)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -39       cdef
+        1       mc
+       41.8     nbal(protein)
+       11.1     nbal(fats)
+
+REMAINING ENTRY SKIPPED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 4
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Model Statistics    SOLVE det Using LP From line 57
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            17
+
+
+GENERATION TIME      =        0.032 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.032 SECONDS      4 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 5
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Solution Report     SOLVE det Using LP From line 57
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   det                 OBJECTIVE  cost
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  57
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      1 Optimal                   
+**** OBJECTIVE VALUE               28.9426
+
+ RESOURCE USAGE, LIMIT          0.015      1000.000
+ ITERATION COUNT, LIMIT         2    2000000000
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+Cplex 12.8.0.0
+
+Space for names approximately 0.00 Mb
+Use option 'names no' to turn use of names off
+LP status(1): optimal
+Cplex Time: 0.00sec (det. 0.01 ticks)
+Optimal solution found.
+Objective :          28.942648
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU cdef                .              .              .             1.0000      
+---- EQU mc                 1.0000         1.0000         1.0000        19.5710      
+
+  cdef  costdefinition
+  mc  mix constraint
+
+---- EQU nbal  nutrient balance
+
+               LOWER          LEVEL          UPPER         MARGINAL
+
+protein        21.0000        21.0000        +INF            0.2855      
+fats            5.0000         5.0000        +INF            0.6753      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR cost              -INF           28.9426        +INF             .          
+
+  cost  total cost per ton
+
+---- VAR x  feed mix (pct)
+
+                 LOWER          LEVEL          UPPER         MARGINAL
+
+barley             .             0.6852        +INF             .          
+oats               .             0.0127        +INF             .          
+sesame             .             0.3021        +INF             .          
+grnd-meal          .              .            +INF            5.1777      
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 6
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Equation Listing    SOLVE chance Using NLP From line 62
+
+
+---- cdef  =E=  costdefinition
+
+cdef..  cost - 24.55*x(barley) - 26.75*x(oats) - 39*x(sesame) - 40.5*x(grnd-meal) =E= 0 ; (LHS = 0)
+     
+
+---- mc  =E=  mix constraint
+
+mc..  x(barley) + x(oats) + x(sesame) + x(grnd-meal) =E= 1 ; (LHS = 1)
+     
+
+---- cc  =G=  chance constraint
+
+cc(protein)..  (11.5931768086856)*x(barley) + (11.8948840442922)*x(oats) + (28.6706497596456)*x(sesame) + (52.1)*x(grnd-meal) =G= 21 ; (LHS = 16.7553620078101, INFES = 4.24463799218985 ****)
+     
+cc(fats)..  2.3*x(barley) + 5.6*x(oats) + 11.1*x(sesame) + 1.3*x(grnd-meal) =G= 5 ; (LHS = 5)
+     
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 7
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Column Listing      SOLVE chance Using NLP From line 62
+
+
+---- cost  total cost per ton
+
+cost
+                (.LO, .L, .UP, .M = -INF, 28.9426476516831, +INF, 0)
+        1       cdef
+
+
+---- x  feed mix (pct)
+
+x(barley)
+                (.LO, .L, .UP, .M = 0, 0.685244910300343, +INF, 0)
+      -24.55    cdef
+        1       mc
+      (11.5932) cc(protein)
+        2.3     cc(fats)
+
+x(oats)
+                (.LO, .L, .UP, .M = 0, 0.0126990526103608, +INF, 0)
+      -26.75    cdef
+        1       mc
+      (11.8949) cc(protein)
+        5.6     cc(fats)
+
+x(sesame)
+                (.LO, .L, .UP, .M = 0, 0.302056037089297, +INF, 0)
+      -39       cdef
+        1       mc
+      (28.6706) cc(protein)
+       11.1     cc(fats)
+
+REMAINING ENTRY SKIPPED
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 8
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Model Statistics    SOLVE chance Using NLP From line 62
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            4
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            17     NON LINEAR N-Z              4
+DERIVATIVE POOL              20     CONSTANT POOL              24
+CODE LENGTH                  25
+
+
+GENERATION TIME      =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+EXECUTION TIME       =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 9
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+Solution Report     SOLVE chance Using NLP From line 62
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   chance              OBJECTIVE  cost
+     TYPE    NLP                 DIRECTION  MINIMIZE
+     SOLVER  CONOPT              FROM LINE  62
+
+**** SOLVER STATUS     1 Normal Completion         
+**** MODEL STATUS      2 Locally Optimal           
+**** OBJECTIVE VALUE               30.4106
+
+ RESOURCE USAGE, LIMIT          0.000      1000.000
+ ITERATION COUNT, LIMIT        17    2000000000
+ EVALUATION ERRORS              0             0
+CONOPT 3         26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+ 
+ 
+    C O N O P T 3   version 3.17I
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 5 variables and 4 constraints
+    with 17 Jacobian elements, 4 of which are nonlinear.
+    The Hessian of the Lagrangian has 4 elements on the diagonal,
+    6 elements below the diagonal, and 4 nonlinear variables.
+ 
+                   Pre-triangular equations:   0
+                   Post-triangular equations:  1
+ 
+ 
+ ** Optimal solution. Reduced gradient less than tolerance.
+ 
+ 
+ CONOPT time Total                            0.005 seconds
+   of which: Function evaluations             0.001 = 20.0%
+             1st Derivative evaluations       0.000 =  0.0%
+ 
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU cdef                .              .              .             1.0000      
+---- EQU mc                 1.0000         1.0000         1.0000        17.8453      
+
+  cdef  costdefinition
+  mc  mix constraint
+
+---- EQU cc  chance constraint
+
+               LOWER          LEVEL          UPPER         MARGINAL
+
+protein        21.0000        21.0000        +INF            0.4216      
+fats            5.0000         5.0000        +INF            0.7422      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR cost              -INF           30.4106        +INF             .          
+
+  cost  total cost per ton
+
+---- VAR x  feed mix (pct)
+
+                 LOWER          LEVEL          UPPER         MARGINAL
+
+barley             .             0.0956        +INF      -1.549973E-9      
+oats               .             0.6121        +INF             .          
+sesame             .             0.0992        +INF             .          
+grnd-meal          .             0.1931        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 26.1.0  rf2b37b9 Released Feb  2, 2019 WEX-WEI x86 64bit/MS Windows - 02/20/19 17:16:57 Page 10
+Chance Constraint Feed Mix Problem  (CHANCE,SEQ=26)
+E x e c u t i o n
+
+
+----     66 PARAMETER mix  Mixing report
+
+                  det      chance
+
+barley          0.685       0.096
+oats            0.013       0.612
+sesame          0.302       0.099
+grnd-meal                   0.193
+
+
+----     66 PARAMETER costR  cost report
+
+det    28.943,    chance 30.411
+
+
+
+EXECUTION TIME       =        0.000 SECONDS      3 MB  26.1.0 rf2b37b9 WEX-WEI
+
+
+USER: Course License NUS Business School             S190121:0416AO-GEN
+      Analytics and Operations                                  DC14729
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week6\Workshop 6\chance.gms
+Output     C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week6\Workshop 6\chance.lst

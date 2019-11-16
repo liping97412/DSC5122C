@@ -1,0 +1,31 @@
+B 2 C o m p i l a t i o n
+B 105 Equation Listing    SOLVE cvar_feed Using LP From line 94
+D 106 cdef
+D 114 mc
+D 121 fc
+D 136 tails
+D 156 cvar_eq
+B 5153 Column Listing      SOLVE cvar_feed Using LP From line 94
+E 5154 cost
+E 5162 x
+E 35187 var
+E 45194 cvar
+E 45201 z
+B 45222 Model Statistics    SOLVE cvar_feed Using LP From line 94
+B 45238 Solution Report     SOLVE cvar_feed Using LP From line 94
+F 45268 cdef
+F 45269 mc
+F 45278 fc
+F 45285 tails
+F 55288 cvar_eq
+G 55291 cost
+G 55297 x
+G 55306 var
+G 55310 cvar
+G 55314 z
+B 65326 E x e c u t i o n
+I 65327 price
+I 79331 x
+I 79337 var
+I 79338 cvar
+I 79340 cost

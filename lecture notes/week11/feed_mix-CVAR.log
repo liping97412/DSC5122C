@@ -1,0 +1,78 @@
+
+--- Job feed_mix-CVAR.gms Start 04/17/19 15:49:22 26.1.0 rf2b37b9 WEX-WEI x86 64bit/MS Windows
+GAMS 26.1.0   Copyright (C) 1987-2019 GAMS Development. All rights reserved
+Licensee: Course License NUS Business School             S190121:0416AO-GEN
+          Analytics and Operations                                  DC14729
+          License for teaching and research at degree granting institutions
+          License Admin: Fernando Oliveira, bizfmdo@nus.edu.sg             
+--- Starting compilation
+--- feed_mix-CVAR.gms(97) 4 Mb
+--- Starting execution: elapsed 0:00:00.379
+--- feed_mix-CVAR.gms(69) 10 Mb
+--- Generating LP model cvar_feed
+--- feed_mix-CVAR.gms(94) 16 Mb
+---   10,005 rows  10,007 columns  70,019 non-zeroes
+--- Executing CPLEX: elapsed 0:00:01.020
+
+IBM ILOG CPLEX   26.1.0 rf2b37b9 Released Feb 02, 2019 WEI x86 64bit/MS Window
+--- GAMS/Cplex licensed for continuous and discrete problems.
+Cplex 12.8.0.0
+
+Reading data...
+Starting Cplex...
+Space for names approximately 0.36 Mb
+Use option 'names no' to turn use of names off
+CPXPARAM_Advance                                 0
+CPXPARAM_Simplex_Limits_Iterations               2000000000
+CPXPARAM_TimeLimit                               1000
+CPXPARAM_Threads                                 1
+CPXPARAM_Parallel                                1
+CPXPARAM_Tune_TimeLimit                          200
+Tried aggregator 1 time.
+LP Presolve eliminated 3 rows and 2 columns.
+Reduced LP has 10002 rows, 10005 columns, and 60008 nonzeros.
+Presolve time = 0.20 sec. (10.69 ticks)
+Initializing dual steep norms . . .
+
+Iteration log . . .
+Iteration:     1   Scaled dual infeas =             3.996000
+Iteration:   772   Scaled dual infeas =             0.920000
+Iteration:  1003   Dual objective     =             2.411584
+Iteration:  1122   Dual objective     =             5.754385
+Iteration:  1259   Dual objective     =             8.840134
+Iteration:  1397   Dual objective     =            12.444157
+Iteration:  1535   Dual objective     =            15.767274
+Iteration:  1673   Dual objective     =            19.049383
+Iteration:  1805   Dual objective     =            22.332293
+Iteration:  1939   Dual objective     =            25.505900
+Iteration:  2049   Dual objective     =            26.837004
+Iteration:  2223   Dual objective     =            28.874299
+Iteration:  2481   Dual objective     =            31.583776
+Iteration:  2776   Dual objective     =            34.498198
+Iteration:  3085   Dual objective     =            36.860083
+Iteration:  3275   Dual objective     =            38.719408
+Iteration:  3477   Dual objective     =            40.380281
+Iteration:  3733   Dual objective     =            42.427938
+Iteration:  3798   Dual objective     =            43.007075
+Iteration:  3940   Dual objective     =            43.998123
+Iteration:  4021   Dual objective     =            44.611918
+Iteration:  4229   Dual objective     =            45.972716
+Iteration:  4333   Dual objective     =            46.299378
+Iteration:  4483   Dual objective     =            47.025903
+Iteration:  4634   Dual objective     =            47.643040
+Iteration:  4784   Dual objective     =            48.050827
+Iteration:  4933   Dual objective     =            48.231617
+LP status(1): optimal
+Cplex Time: 2.23sec (det. 2019.75 ticks)
+
+Optimal solution found.
+Objective :          48.244568
+
+--- Restarting execution
+--- feed_mix-CVAR.gms(94) 8 Mb
+--- Reading solution for model cvar_feed
+--- feed_mix-CVAR.gms(94) 9 Mb
+--- Executing after solve: elapsed 0:00:06.791
+--- feed_mix-CVAR.gms(95) 10 Mb
+*** Status: Normal completion
+--- Job feed_mix-CVAR.gms Stop 04/17/19 15:49:30 elapsed 0:00:07.354

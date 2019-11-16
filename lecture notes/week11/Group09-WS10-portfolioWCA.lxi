@@ -1,0 +1,22 @@
+B 2 C o m p i l a t i o n
+B 90 Equation Listing    SOLVE portfolio_worst Using LP From line 76
+D 91 fsum
+D 99 dmean
+D 106 tails
+B 131 Column Listing      SOLVE portfolio_worst Using LP From line 76
+E 132 x
+E 3152 e_return
+E 3159 mu
+B 4167 Model Statistics    SOLVE portfolio_worst Using LP From line 76
+B 4183 Solution Report     SOLVE portfolio_worst Using LP From line 76
+F 4213 fsum
+F 4214 dmean
+F 4223 tails
+G 5223 x
+G 5233 e_return
+G 5237 mu
+B 5247 E x e c u t i o n
+I 5248 a
+I 6588 x
+I 6594 e_return
+I 6596 mu

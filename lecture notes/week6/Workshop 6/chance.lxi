@@ -1,0 +1,32 @@
+B 2 C o m p i l a t i o n
+B 73 Equation Listing    SOLVE det Using LP From line 57
+D 74 cdef
+D 80 mc
+D 85 nbal
+B 94 Column Listing      SOLVE det Using LP From line 57
+E 95 cost
+E 103 x
+B 130 Model Statistics    SOLVE det Using LP From line 57
+B 146 Solution Report     SOLVE det Using LP From line 57
+F 175 cdef
+F 176 mc
+F 185 nbal
+G 187 cost
+G 193 x
+B 209 Equation Listing    SOLVE chance Using NLP From line 62
+D 210 cdef
+D 216 mc
+D 221 cc
+B 230 Column Listing      SOLVE chance Using NLP From line 62
+E 231 cost
+E 239 x
+B 266 Model Statistics    SOLVE chance Using NLP From line 62
+B 284 Solution Report     SOLVE chance Using NLP From line 62
+F 328 cdef
+F 329 mc
+F 338 cc
+G 340 cost
+G 346 x
+B 363 E x e c u t i o n
+I 364 mix
+I 375 costR

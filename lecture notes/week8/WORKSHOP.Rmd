@@ -1,0 +1,37 @@
+---
+title: "Untitled"
+author: "LI LIPING"
+date: "13 March 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+main <- read.csv('data.csv')
+x <- c(main$stage)
+
+p <- matrix(nrow = 4, ncol = 4, 0)
+for (t in 1:(length(x) - 1)) p[x[t], x[t + 1]] <- p[x[t], x[t + 1]] + 1
+for (i in 1:4) p[i, ] <- p[i, ] / sum(p[i, ])
+p
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+install.packages("markovchain")
+xChar<-as.character(x)
+library(markovchain)
+mcX<-markovchainFit(xChar)$estimate
+mcX
+```
+
+

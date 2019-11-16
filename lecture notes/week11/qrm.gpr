@@ -1,0 +1,92 @@
+[PROJECT]
+
+[RP:UNTITLED_1]
+1=
+
+[RP:RISK_PROBABILITY]
+1=
+
+[RP:FEED_MIX_C]
+1=
+
+[RP:FRUIT_CVAR]
+1=
+
+[RP:FRUIT_LP]
+1=
+
+[RP:FRUIT_WORST_CASE]
+1=
+
+[RP:FRUIT_CVAR - SENSITIVITY]
+1=
+
+[SOLVERS]
+CNS=IPOPT
+
+[RP:PROJECT_CVAR]
+1=
+
+[RP:PROJECT_CVAR - 12]
+1=
+
+[RP:WORKSHOP12_WCA]
+1=
+
+[RP:HAMMER_NEUTRAL]
+1=
+
+[RP:HAMMER_WORST_CASE]
+1=
+
+[RP:GROUP09-WS10-FEED_MIX-2B]
+1=
+
+[RP:FEED_MIX-WORST CASE]
+1=
+
+[RP:HAMMER_CVAR]
+1=
+
+[RP:COFFEE]
+1=
+
+[RP:PORTFOLIOCVAR]
+1=
+
+[RP:FEED_MIX-CVAR]
+1=
+
+[RP:PORTFOLIOPROB]
+1=
+
+[RP:PORTFOLIOWCA]
+1=
+
+[RP:WORST CASE]
+1=
+
+[RP:CVAR]
+1=
+
+[MRUFILES]
+1=C:\Users\Administrator\Desktop\QRM final test\GAMS\portfolio\portfolioWCA.gms
+2=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week9\session 9 - workshop\portfolioProb.gms
+3=C:\Users\Administrator\Desktop\QRM final test\GAMS\feed mix\feed_mix-CVAR.gms
+4=C:\Users\Administrator\Desktop\QRM final test\GAMS\portfolio\portfolioCVaR.gms
+5=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week8\coffee.gms
+6=C:\Users\Administrator\Desktop\QRM final test\GAMS\hammer\hammer_CVAR.gms
+7=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week11\hammer_CVAR.lst
+8=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week11\feed_mix-CVAR.lst
+
+[OPENWINDOW_1]
+FILE0=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week11\CVaR.lst
+FILE1=C:\Users\Administrator\Desktop\MSBA\DSC5211C QUANTITATIVE RISK MANAGEMENT\week11\worst case.lst
+FILE2=C:\Users\Administrator\Desktop\QRM final test\GAMS\CVaR.gms
+FILE3=C:\Users\Administrator\Desktop\QRM final test\GAMS\worst case.gms
+FILE4=C:\Users\Administrator\Desktop\QRM final test\GAMS\worst case.gms
+MAXIM=0
+TOP=5
+LEFT=3
+HEIGHT=784
+WIDTH=1382
